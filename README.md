@@ -55,12 +55,15 @@ AWSInstance.S3_CLIENT()
 
 Services:
 --------------
+```
 * awsEmailService
   * msgId send(String from, EmailCommand email)
   * msgId send(EmailCommand email)
-  * void verifyEmailAddress(String emailToVerify) - used to add "senders" while SES in sandbox mode
+  * void verifyEmailAddress(String emailToVerify)
+    * used to add "send to's" while SES in sandbox mode
   * List<String> getVerifiedEmailAddresses()
-  * List<EmailStatsCommand> getStatistics() - SES statistics
+  * List<EmailStatsCommand> getStatistics()
+    * SES statistics
 * awsStorageService
   * boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)
   * [content, metadata] getPublicBytes(String rootfolder, String path)
@@ -75,6 +78,7 @@ Services:
   * String getURL(String lobBucketName, String key = null, bHostForm = true)
   * String getObjectURL(String lobBucketName, String rootfolder, String path)
   * ObjectListing getObjectList(String lobBucketName, String rootfolder, String path)
+```
 
 Examples:
 --------------
