@@ -55,30 +55,28 @@ AWSInstance.S3_CLIENT()
 
 Services:
 --------------
-```
 * awsEmailService
-  * msgId send(String from, EmailCommand email)
-  * msgId send(EmailCommand email)
-  * void verifyEmailAddress(String emailToVerify)
+  * ```msgId send(String from, EmailCommand email)```
+  * ```msgId send(EmailCommand email)```
+  * ```void verifyEmailAddress(String emailToVerify)```
     * used to add "send to's" while SES in sandbox mode
-  * List<String> getVerifiedEmailAddresses()
-  * List<EmailStatsCommand> getStatistics()
+  * ```List<String> getVerifiedEmailAddresses()```
+  * ```List<EmailStatsCommand> getStatistics()```
     * SES statistics
 * awsStorageService
-  * boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)
-  * [content, metadata] getPublicBytes(String rootfolder, String path)
-  * [text, metadata] getPublicText(String rootfolder, String path)
-  * String getPublicObjectURL(String rootfolder, String path)
-  * String getPublicURL(String key = null)
-  * ObjectListing getPublicObjectList(String rootfolder, String path)
-  * deletePublicObject(String rootfolder, String path)
-  * deleteObject(String lobBucketName, String rootfolder, String path)
-  * boolean putBytes(String lobBucketName, String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)
-  * [content, metadata] getBytes(String lobBucketName, String rootfolder, String path)
-  * String getURL(String lobBucketName, String key = null, bHostForm = true)
-  * String getObjectURL(String lobBucketName, String rootfolder, String path)
-  * ObjectListing getObjectList(String lobBucketName, String rootfolder, String path)
-```
+  * ```boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)```
+  * ```[content, metadata] getPublicBytes(String rootfolder, String path)```
+  * ```[text, metadata] getPublicText(String rootfolder, String path)```
+  * ```String getPublicObjectURL(String rootfolder, String path)```
+  * ```String getPublicURL(String key = null)```
+  * ```ObjectListing getPublicObjectList(String rootfolder, String path)```
+  * ```deletePublicObject(String rootfolder, String path)```
+  * ```deleteObject(String lobBucketName, String rootfolder, String path)```
+  * ```boolean putBytes(String lobBucketName, String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)```
+  * ```[content, metadata] getBytes(String lobBucketName, String rootfolder, String path)```
+  * ```String getURL(String lobBucketName, String key = null, bHostForm = true)```
+  * ```String getObjectURL(String lobBucketName, String rootfolder, String path)```
+  * ```ObjectListing getObjectList(String lobBucketName, String rootfolder, String path)```
 
 Examples:
 --------------
