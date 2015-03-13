@@ -1,0 +1,10 @@
+.DS_Store
+*.log
+/.classpath
+/.project
+/extra
+/grails-aws-instance-*.zip
+/grails-aws-instance-*.zip.sha1
+/plugin.xml
+/target
+/web-app
