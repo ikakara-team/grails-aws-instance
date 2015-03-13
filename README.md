@@ -7,6 +7,15 @@ clients/services to access AWS Services for email and storage.
 
 Installation:
 --------------
+
+1. Sign-up for a FREE AWS Account: http://aws.amazon.com/free/
+  * Requires a credit-card and "personal verification" (by phone, etc.)
+2. AWS Console (for manual configuration)
+  * Create an AWS IAM user (for your app): http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_SettingUpUser.html:
+    * Be sure to use a policy that allows access to AWS services that app requires, such as SES, S3, etc
+  * Configure AWS SES: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-ses.html
+  * Create and configure S3 public bucket: http://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-2
+3. grails-app/conf/BuildConfig.groovy:
 ```
   plugins {
 ...
@@ -31,10 +40,6 @@ grails {
   }
 }
 ```
-
-For AWS SES configuration, see http://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-ses.html
-
-For AWS S3 public buckets, see http://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-2
 
 Usage:
 --------------
