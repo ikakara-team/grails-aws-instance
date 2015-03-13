@@ -82,13 +82,13 @@ try {
 
 Example of storing an image file in the S3 bucket:
 ```
-def USERS_FOLDERS
+def USERS_FOLDER = 'users'
 def fullKey = user_id + "/" + filename;
 File imgFile // input 
 
 if (awsStorageService.putPublicBytes(USERS_FOLDER, fullKey, imgFile.getBytes(), imgFile.getContentType(), [date:(new Date()).toString()])) {
   def uploadedFullFileUrl = awsStorageService.getPublicObjectURL(USERS_FOLDER, fullKey)
-  log.info("Drink: Uploaded full size image: ${uploadedFullFileUrl}")
+  log.info("Uploaded full size image: ${uploadedFullFileUrl}")
 } else {
   log.error("save_imgFile failed: ${fullKey} ${filename}")
 }
