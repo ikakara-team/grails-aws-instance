@@ -43,6 +43,41 @@ grails {
 
 Usage:
 --------------
+```
+import ikakara.awsinstance.aws.AWSInstance
+
+// AmazonSimpleEmailServiceClient
+AWSInstance.SES_CLIENT()
+
+// AmazonS3 Client
+AWSInstance.S3_CLIENT()
+```
+
+Services:
+--------------
+* awsEmailService
+  * msgId send(String from, EmailCommand email)
+  * msgId send(EmailCommand email)
+  * void verifyEmailAddress(String emailToVerify) - used to add "senders" while SES in sandbox mode
+  * List<String> getVerifiedEmailAddresses()
+  * List<EmailStatsCommand> getStatistics() - SES statistics
+* awsStorageService
+  * boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)
+  * [content, metadata] getPublicBytes(String rootfolder, String path)
+  * [text, metadata] getPublicText(String rootfolder, String path)
+  * String getPublicObjectURL(String rootfolder, String path)
+  * String getPublicURL(String key = null)
+  * ObjectListing getPublicObjectList(String rootfolder, String path)
+  * deletePublicObject(String rootfolder, String path)
+  * deleteObject(String lobBucketName, String rootfolder, String path)
+  * boolean putBytes(String lobBucketName, String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)
+  * [content, metadata] getBytes(String lobBucketName, String rootfolder, String path)
+  * String getURL(String lobBucketName, String key = null, bHostForm = true)
+  * String getObjectURL(String lobBucketName, String rootfolder, String path)
+  * ObjectListing getObjectList(String lobBucketName, String rootfolder, String path)
+
+Examples:
+--------------
 Example sending an email:
 ```
  def binding = [
@@ -93,7 +128,7 @@ Example of storing an image file in the S3 bucket:
 ```
 def USERS_FOLDER = 'users'
 def fullKey = user_id + "/" + filename;
-File imgFile // input 
+File imgFile // input
 
 if (awsStorageService.putPublicBytes(USERS_FOLDER, fullKey, imgFile.getBytes(), imgFile.getContentType(), [date:(new Date()).toString()])) {
   def uploadedFullFileUrl = awsStorageService.getPublicObjectURL(USERS_FOLDER, fullKey)
