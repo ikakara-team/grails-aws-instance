@@ -15,11 +15,11 @@
 package ikakara.awsinstance
 
 import groovy.transform.InheritConstructors
+
 /**
- *
  * @author Allen
  */
 @InheritConstructors
-class EmailException extends Exception {
+class EmailException extends RuntimeException {
 
 }

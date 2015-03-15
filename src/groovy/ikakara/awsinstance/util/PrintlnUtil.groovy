@@ -14,32 +14,32 @@
  */
 package ikakara.awsinstance.util
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
+import com.amazonaws.AmazonClientException
+import com.amazonaws.AmazonServiceException
 
 /**
- *
  * @author Allen
  */
 class PrintlnUtil {
-  
-  public static AmazonServiceException(String header, AmazonServiceException ase) {
-    println header
-    println("Caught an AmazonServiceException, which means your request made it "
-      + "to Amazon S3, but was rejected with an error response for some reason.");
-    println("Error Message:    " + ase.getMessage());
-    println("HTTP Status Code: " + ase.getStatusCode());
-    println("AWS Error Code:   " + ase.getErrorCode());
-    println("Error Type:       " + ase.getErrorType());
-    println("Request ID:       " + ase.getRequestId());
+
+  static AmazonServiceException(String header, AmazonServiceException ase) {
+    StringBuilder sb = new StringBuilder(header)
+    sb << "\nCaught an AmazonServiceException, which means your request made it " +
+          "to Amazon S3, but was rejected with an error response for some reason.\n"
+    sb << "Error Message:    " << ase.message << '\n'
+    sb << "HTTP Status Code: " << ase.statusCode << '\n'
+    sb << "AWS Error Code:   " << ase.errorCode << '\n'
+    sb << "Error Type:       " << ase.errorType << '\n'
+    sb << "Request ID:       " << ase.requestId
+    println sb
   }
-	
-  public static AmazonClientException(String header, AmazonClientException ace) {
-    println header
-    println("Caught an AmazonClientException, which means the client encountered "
-      + "a serious internal problem while trying to communicate with S3, "
-      + "such as not being able to access the network.");
-    println("Error Message: " + ace.getMessage());
+
+  static AmazonClientException(String header, AmazonClientException ace) {
+    StringBuilder sb = new StringBuilder(header)
+    sb << "\nCaught an AmazonClientException, which means the client encountered " +
+          "a serious internal problem while trying to communicate with S3, " +
+          "such as not being able to access the network.\n"
+    sb << "Error Message: " << ace.message
+    println sb
   }
 }
-

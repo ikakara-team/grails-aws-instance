@@ -12,27 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ikakara.awsinstance.command;
+package ikakara.awsinstance.command
+
+import grails.validation.Validateable
 
 /**
- *
  * @author Allen
  */
-@grails.validation.Validateable(nullable=true)
-public class EmailStatsCommand {
+@Validateable(nullable=true)
+class EmailStatsCommand {
 
-  def timestamp
-  def attempts
-  def rejects
-  def complaints
-  def bounces
+  String timestamp
+  String attempts
+  String rejects
+  String complaints
+  String bounces
 
-  public EmailStatsCommand(def ts, def at, def re, def co, def bo) {
+  EmailStatsCommand(String ts, String at, String re, String co, String bo) {
     timestamp = ts
     attempts = at
     rejects = re
     complaints = co
     bounces = bo
   }
-
 }
