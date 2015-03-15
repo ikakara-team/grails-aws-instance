@@ -2,8 +2,7 @@
 
 Description:
 --------------
-Grails plugin to utilize a single (thread-safe) AWS Client Instance.  Provides
-clients/services to access AWS Services for email and storage.
+Grails plugin to utilize a single (thread-safe) AWS Client Instance.  Provides clients/services to access AWS Services for email and storage.
 
 Installation:
 --------------
@@ -120,19 +119,19 @@ def email = new EmailCommand()
               .withText(text, binding)
               .withHtml(html, binding)
 try {
-  awsEmailService.send(email);
+  awsEmailService.send(email)
 } catch(EmailException e) {
-  log.error("Exception while sending email: " + e);
+  log.error("Exception while sending email: $e.message", e)
 }
 ```
 
 Example of storing an image file in the S3 bucket:
 ```
 def USERS_FOLDER = 'users'
-def fullKey = user_id + "/" + filename;
+def fullKey = user_id + "/" + filename
 File imgFile // input
 
-if (awsStorageService.putPublicBytes(USERS_FOLDER, fullKey, imgFile.getBytes(), imgFile.getContentType(), [date:(new Date()).toString()])) {
+if (awsStorageService.putPublicBytes(USERS_FOLDER, fullKey, imgFile.bytes, imgFile.contentType, [date:(new Date()).toString()])) {
   def uploadedFullFileUrl = awsStorageService.getPublicObjectURL(USERS_FOLDER, fullKey)
   log.info("Uploaded full size image: ${uploadedFullFileUrl}")
 } else {

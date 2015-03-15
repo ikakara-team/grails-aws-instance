@@ -12,25 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ikakara.awsinstance.aws;
+package ikakara.awsinstance.aws
 
-import grails.util.Holders;
-
-import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentials
 
 /**
- *
  * @author Allen
  */
-public class AuthCredentials implements AWSCredentials {
-  //private static String accessKey = Holders.config.grails.plugin.awsinstance?.accessKey;
-  //private static String secretKey = Holders.config.grails.plugin.awsinstance?.secretKey;
+@Singleton
+class AuthCredentials implements AWSCredentials {
 
-  public String getAWSAccessKeyId() {
-    return Holders.config.grails.plugin.awsinstance?.accessKey//accessKey;
+  private String accessKey
+  private String secretKey
+
+  void init(String accessKey, String secretKey) {
+    this.accessKey = accessKey
+    this.secretKey = secretKey
   }
 
-  public String getAWSSecretKey() {
-    return Holders.config.grails.plugin.awsinstance?.secretKey//secretKey;
+  String getAWSAccessKeyId() {
+    return accessKey
+  }
+
+  String getAWSSecretKey() {
+    return secretKey
   }
 }

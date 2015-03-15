@@ -14,16 +14,14 @@
  */
 package ikakara.awsinstance.json
 
-import groovy.util.logging.Log4j
+import groovy.util.logging.Slf4j
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper
 
 /**
- *
  * @author Allen
  */
-@Log4j("LOG")
-public class FasterXMLInstance {
-  static public ObjectMapper objectMapper = new ObjectMapper();
+@Slf4j("LOG")
+class FasterXMLInstance {
+  static ObjectMapper objectMapper = new ObjectMapper()
 }

@@ -14,36 +14,26 @@
  */
 package ikakara.awsinstance.aws
 
-import groovy.transform.Synchronized
+import groovy.transform.CompileStatic
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClient;
-
-//import com.amazonaws.services.mobileanalytics.AmazonMobileAnalyticsClient;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.Index;
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
 
 /**
- *
  * @author Allen
  */
-public class AWSInstance {
+@CompileStatic
+class AWSInstance {
 
-  private static AmazonSimpleEmailServiceClient _sesClient = new AmazonSimpleEmailServiceClient(new AuthCredentials());
-  static public AmazonSimpleEmailServiceClient SES_CLIENT() {
-    return _sesClient;
+  private static AmazonSimpleEmailServiceClient _sesClient = new AmazonSimpleEmailServiceClient(AuthCredentials.instance)
+  private static AmazonS3 _s3Client = new AmazonS3Client(AuthCredentials.instance)
+
+  static AmazonSimpleEmailServiceClient SES_CLIENT() {
+    return _sesClient
   }
 
-  private static AmazonS3 _s3Client = new AmazonS3Client(new AuthCredentials());
-  static public AmazonS3 S3_CLIENT() {
-    return _s3Client;
+  static AmazonS3 S3_CLIENT() {
+    return _s3Client
   }
-
 }
-

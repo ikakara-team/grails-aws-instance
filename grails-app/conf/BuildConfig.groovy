@@ -1,6 +1,6 @@
 grails.project.work.dir = 'target'
 
-grails.project.dependency.resolver = "maven" // or ivy
+grails.project.dependency.resolver = "maven"
 grails.project.dependency.resolution = {
 
   inherits("global")
@@ -13,9 +13,7 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.9.24') { // http://aws.amazon.com/releasenotes/Java?browse=1
-      export = false
-    }
+    compile 'com.amazonaws:aws-java-sdk:1.9.24' // http://aws.amazon.com/releasenotes/Java?browse=1
 
     // http://mvnrepository.com/artifact/com.fasterxml.jackson.core
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
@@ -27,7 +25,7 @@ grails.project.dependency.resolution = {
 
   plugins {
     // needed for testing
-    build (":tomcat:8.0.20" ){ // 8.0.18 has issues - https://jira.grails.org/browse/GPTOMCAT-29
+    build (":tomcat:8.0.20") {
       export = false
     }
 
@@ -35,7 +33,7 @@ grails.project.dependency.resolution = {
     compile ':plugin-config:0.2.0'
 
     build(":release:3.0.1",
-          ":rest-client-builder:1.0.3") {
+          ":rest-client-builder:2.0.3") {
       export = false
     }
   }

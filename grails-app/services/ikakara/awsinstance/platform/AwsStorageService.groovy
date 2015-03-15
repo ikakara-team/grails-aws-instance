@@ -14,86 +14,67 @@
  */
 package ikakara.awsinstance.platform
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.io.ByteArrayOutputStream;
-import java.util.UUID;
+import org.springframework.beans.factory.InitializingBean
 
-import grails.util.Holders;
-
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
-
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.GetObjectRequest
-import com.amazonaws.services.s3.model.S3Object
-import com.amazonaws.services.s3.model.GetObjectRequest
-import com.amazonaws.services.s3.model.S3Object
+import com.amazonaws.AmazonClientException
+import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.s3.model.GetObjectRequest
 import com.amazonaws.services.s3.model.ListObjectsRequest
 import com.amazonaws.services.s3.model.ObjectListing
+import com.amazonaws.services.s3.model.ObjectMetadata
+import com.amazonaws.services.s3.model.PutObjectRequest
 import com.amazonaws.services.s3.model.S3Object
 
 import ikakara.awsinstance.aws.AWSInstance
 import ikakara.awsinstance.util.PrintlnUtil
 
-class AwsStorageService {
+class AwsStorageService implements InitializingBean {
 
   static transactional = false
 
-  public final int CHUNK_BYTESIZE = 4096
-  public final String PUBLIC_BUCKET = Holders.config.grails.plugin.awsinstance?.s3.bucketName;
+  public static final int CHUNK_BYTESIZE = 4096
 
-  public boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null) {
-    return putBytes(PUBLIC_BUCKET, rootfolder, path, _bytes, contentType, metadata);
+  public static String PUBLIC_BUCKET
+
+  def grailsApplication
+
+  boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null) {
+    return putBytes(PUBLIC_BUCKET, rootfolder, path, _bytes, contentType, metadata)
   }
 
-  public def getPublicBytes(String rootfolder, String path) {
-    return getBytes(PUBLIC_BUCKET, rootfolder, path);
+  def getPublicBytes(String rootfolder, String path) {
+    return getBytes(PUBLIC_BUCKET, rootfolder, path)
   }
 
-  public def getPublicText(String rootfolder, String path) {
-    def text = ''
+  def getPublicText(String rootfolder, String path) {
 
-    def (content, metadata) = getBytes(PUBLIC_BUCKET, rootfolder, path);
-    if(content) {
-      text = inputStreamToString(content)
-    }
+    def (InputStream content, metadata) = getBytes(PUBLIC_BUCKET, rootfolder, path)
+    String text = content ? inputStreamToString(content) : ''
 
     return [text, metadata]
   }
 
-  public String getPublicObjectURL(String rootfolder, String path) {
-    return getObjectURL(PUBLIC_BUCKET, rootfolder, path);
+  String getPublicObjectURL(String rootfolder, String path) {
+    return getObjectURL(PUBLIC_BUCKET, rootfolder, path)
   }
 
-  public String getPublicURL(String key = null) {
-    return getURL(PUBLIC_BUCKET, key);
+  String getPublicURL(String key = null) {
+    return getURL(PUBLIC_BUCKET, key)
   }
 
-  public ObjectListing getPublicObjectList(String rootfolder, String path) {
-    return getObjectList(PUBLIC_BUCKET, rootfolder, path);
+  ObjectListing getPublicObjectList(String rootfolder, String path) {
+    return getObjectList(PUBLIC_BUCKET, rootfolder, path)
   }
 
-  public String deletePublicObject(String rootfolder, String path) {
-    return deleteObject(PUBLIC_BUCKET, rootfolder, path);
+  String deletePublicObject(String rootfolder, String path) {
+    return deleteObject(PUBLIC_BUCKET, rootfolder, path)
   }
 
-  public def deleteObject(String lobBucketName, String rootfolder, String path) {
-    def _key = "${rootfolder}/${path}";
+  def deleteObject(String lobBucketName, String rootfolder, String path) {
+    def _key = "${rootfolder}/${path}"
 
     try {
-      AWSInstance.S3_CLIENT().deleteObject(lobBucketName, _key);
+      AWSInstance.S3_CLIENT().deleteObject(lobBucketName, _key)
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("deleteObject ${lobBucketName}/${_key}", ase)
     } catch (AmazonClientException ace) {
@@ -101,24 +82,20 @@ class AwsStorageService {
     }
   }
 
-  public boolean putBytes(String lobBucketName, String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null) {
-    boolean bSuccess = false;
+  boolean putBytes(String lobBucketName, String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null) {
 
-    def _key = "${rootfolder}/${path}";
+    def _key = "${rootfolder}/${path}"
 
     try {
       if(_bytes) {
-        InputStream bais = new ByteArrayInputStream(_bytes);
-        ObjectMetadata meta = new ObjectMetadata();
-        meta.setContentType(contentType);
-        meta.setContentLength(_bytes.length);
+        InputStream bais = new ByteArrayInputStream(_bytes)
+        ObjectMetadata meta = new ObjectMetadata(contentType: contentType, contentLength: _bytes.length)
         if(metadata) {
-          meta.setUserMetadata(metadata);
+          meta.userMetadata = metadata
         }
 
-        def request = new PutObjectRequest(lobBucketName, _key, bais, meta)
-        AWSInstance.S3_CLIENT().putObject(request);
-        bSuccess = true;
+        AWSInstance.S3_CLIENT().putObject(new PutObjectRequest(lobBucketName, _key, bais, meta))
+        return true
       }
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("putBytes ${lobBucketName}/${_key}", ase)
@@ -126,78 +103,65 @@ class AwsStorageService {
       PrintlnUtil.AmazonClientException("putBytes ${lobBucketName}/${_key}", ace)
     }
 
-    return bSuccess;
+    return false
   }
 
-  public def getBytes(String lobBucketName, String rootfolder, String path) {
-    S3Object object = null;
+  def getBytes(String lobBucketName, String rootfolder, String path) {
+    S3Object object
 
-    def _key = "${rootfolder}/${path}";
+    def _key = "${rootfolder}/${path}"
 
     try {
-      def request = new GetObjectRequest(lobBucketName, _key);
-      object = AWSInstance.S3_CLIENT().getObject(request);
+      object = AWSInstance.S3_CLIENT().getObject(new GetObjectRequest(lobBucketName, _key))
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("getBytes ${lobBucketName}/${_key}", ase)
     } catch (AmazonClientException ace) {
       PrintlnUtil.AmazonClientException("getBytes ${lobBucketName}/${_key}", ace)
     }
 
-    return [object?.getObjectContent(), object?.getObjectMetadata()];
+    return [object?.objectContent, object?.objectMetadata]
   }
 
-  public String getURL(String lobBucketName, String key = null, bHostForm = true) {
-    String objurl
-
-    if(bHostForm) {
-      objurl = "${lobBucketName}.s3.amazonaws.com/"
-    } else {
-      objurl = "s3.amazonaws.com/${lobBucketName}/"
-    }
-
-    if(key) {
-      objurl = objurl + key;
-    }
-
-    return objurl;
+  String getURL(String lobBucketName, String key = null, hostForm = true) {
+    return hostForm ? "${lobBucketName}.s3.amazonaws.com/" : "s3.amazonaws.com/${lobBucketName}/" + (key ?: '')
   }
 
-  public String getObjectURL(String lobBucketName, String rootfolder, String path) {
-    def _key = "${rootfolder}/${path}";
-    return getURL(lobBucketName, _key);
+  String getObjectURL(String lobBucketName, String rootfolder, String path) {
+    return getURL(lobBucketName, "${rootfolder}/${path}")
   }
 
-  public ObjectListing getObjectList(String lobBucketName, String rootfolder, String path) {
-    ObjectListing objectListing = null;
+  ObjectListing getObjectList(String lobBucketName, String rootfolder, String path) {
 
-    def _key = "${rootfolder}/${path}";
+    def _key = "${rootfolder}/${path}"
 
     try {
       def request = new ListObjectsRequest()
       .withBucketName(lobBucketName)
       .withPrefix(_key)
 
-      objectListing = AWSInstance.S3_CLIENT().listObjects(request);
+      return AWSInstance.S3_CLIENT().listObjects(request)
 
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("getObjectList ${lobBucketName}/${_key}", ase)
     } catch (AmazonClientException ace) {
       PrintlnUtil.AmazonClientException("getObjectList ${lobBucketName}/${_key}", ace)
     }
-    return objectListing;
   }
 
   private static String inputStreamToString(InputStream input) throws IOException {
     StringBuffer sb = new StringBuffer()
-    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+    BufferedReader reader = new BufferedReader(new InputStreamReader(input))
     while (true) {
-      String line = reader.readLine();
+      String line = reader.readLine()
       if (line == null) {
-        break;
+        break
       }
-      sb.append(line).append('\n')
+      sb << line << '\n'
     }
-    return sb;
+    return sb
   }
 
+  void afterPropertiesSet() throws Exception {
+    PUBLIC_BUCKET = grailsApplication.config.grails.plugin.awsinstance?.s3.bucketName
+  }
 }
