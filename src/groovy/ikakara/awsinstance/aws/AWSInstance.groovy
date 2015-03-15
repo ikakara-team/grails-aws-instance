@@ -14,8 +14,6 @@
  */
 package ikakara.awsinstance.aws
 
-import groovy.transform.CompileStatic
-
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
@@ -23,7 +21,6 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
 /**
  * @author Allen
  */
-@CompileStatic
 class AWSInstance {
 
   private static AmazonSimpleEmailServiceClient _sesClient = new AmazonSimpleEmailServiceClient(AuthCredentials.instance)
