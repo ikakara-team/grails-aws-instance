@@ -35,8 +35,26 @@ class AwsStorageService implements InitializingBean {
   public static final int CHUNK_BYTESIZE = 4096
 
   public static String PUBLIC_BUCKET
+  public static String PUBLIC_BUCKET_HOST
 
   def grailsApplication
+
+  void afterPropertiesSet() throws Exception {
+    // We should throw an exception if the PUBLIC_BUCKET contains any dots
+    PUBLIC_BUCKET = grailsApplication.config.grails.plugin.awsinstance?.s3.bucketName
+
+    // can't do this 'sub.domain.com.s3.amazonaws.com' because wildcard ssl doesn't do dots
+    // using dashes, like sub-domain-com.s3.amazonaws.com works
+    // cname like sub.domain.com -> sub-domain-com.s3.amazonaws.com requires
+    // http://aws.amazon.com/cloudfront/custom-ssl-domains/ - $600!!!
+    PUBLIC_BUCKET_HOST = PUBLIC_BUCKET + '.s3.amazonaws.com'
+    // discovered this https://bryce.fisher-fleig.org/blog/setting-up-ssl-on-aws-cloudfront-and-s3/
+    // will investigate how to integrate this w/ this plugin
+  }
+
+  String getPublicBucketHost() {
+    return PUBLIC_BUCKET_HOST
+  }
 
   boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null) {
     return putBytes(PUBLIC_BUCKET, rootfolder, path, _bytes, contentType, metadata)
@@ -161,7 +179,4 @@ class AwsStorageService implements InitializingBean {
     return sb
   }
 
-  void afterPropertiesSet() throws Exception {
-    PUBLIC_BUCKET = grailsApplication.config.grails.plugin.awsinstance?.s3.bucketName
-  }
 }

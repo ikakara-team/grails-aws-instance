@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.2'
+    compile ':aws-instance:0.3'
 ...
   }
 ```
@@ -70,6 +70,7 @@ Services:
   * ```List<EmailStatsCommand> getStatistics()```
     * SES statistics
 * awsStorageService
+  * ```String getPublicBucketHost()```
   * ```boolean putPublicBytes(String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)```
   * ```[content, metadata] getPublicBytes(String rootfolder, String path)```
   * ```[text, metadata] getPublicText(String rootfolder, String path)```
@@ -157,6 +158,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.3 - awsStorageService.getPublicBucketHost()
 0.2 - FileUtil
 0.1 - initial checkin
 ```
