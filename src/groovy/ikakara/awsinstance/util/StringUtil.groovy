@@ -32,36 +32,36 @@ import com.github.slugify.Slugify
 @Slf4j("LOG")
 @CompileStatic
 public class StringUtil {
-  static final String RANDOM_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  static final int RANDOM_CHARS_LENGTH = RANDOM_CHARS.length();
+  static final String RANDOM_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  static final int RANDOM_CHARS_LENGTH = RANDOM_CHARS.length()
 
   public static String slugify(String str) throws IOException {
-    Slugify slg = new Slugify();
-    String s = slg.slugify(str);
-    return s;
+    Slugify slg = new Slugify()
+    String s = slg.slugify(str)
+    return s
   }
 
   public static String getRandomNumbers(int numChar) {
-    return getRandomChars(numChar, 10);
+    return getRandomChars(numChar, 10)
   }
 
   public static String getRandomChars(int numChar) {
-    return getRandomChars(numChar, RANDOM_CHARS_LENGTH);
+    return getRandomChars(numChar, RANDOM_CHARS_LENGTH)
   }
 
   public static String getRandomCharsLength(int min, int max) {
-    int num = NumberUtil.getRandomInt(min, max);
-    return getRandomChars(num, RANDOM_CHARS_LENGTH);
+    int num = NumberUtil.getRandomInt(min, max)
+    return getRandomChars(num, RANDOM_CHARS_LENGTH)
   }
 
   public static String getRandomChars(int numChar, int range) {
     // assert range <= RANDOM_CHARS_LENGTH
-    SecureRandom rand = new SecureRandom();
-    StringBuilder sbStr = new StringBuilder();
+    SecureRandom rand = new SecureRandom()
+    StringBuilder sbStr = new StringBuilder()
     for (int i = 0; i < numChar; i++) {
-      sbStr.append(RANDOM_CHARS.charAt(rand.nextInt(range)));
+      sbStr.append(RANDOM_CHARS.charAt(rand.nextInt(range)))
     }
-    return sbStr.toString();
+    return sbStr.toString()
   }
 
   /**
@@ -75,63 +75,63 @@ public class StringUtil {
    * @return An array of two strings split from source by splitter.
    */
   static public String[] splitFirst(String source, String splitter) {
-    String[] ret_array = null;
-    int last = 0;
-    int next = 0;
+    String[] ret_array = null
+    int last = 0
+    int next = 0
 
     // find first splitter in source
-    next = source.indexOf(splitter, last);
+    next = source.indexOf(splitter, last)
     if (next != -1) {
-      ret_array = new String[2];
+      ret_array = new String[2]
       // isolate from last thru before next
-      ret_array[0] = source.substring(last, next);
-      last = next + splitter.length();
+      ret_array[0] = source.substring(last, next)
+      last = next + splitter.length()
 
       if (last < source.length()) {
-        ret_array[1] = source.substring(last, source.length());
+        ret_array[1] = source.substring(last, source.length())
       }
     } else {
       // didn't find splitter
-      ret_array = new String[1];
-      ret_array[0] = source;
+      ret_array = new String[1]
+      ret_array[0] = source
     }
 
-    return ret_array;
+    return ret_array
   }
 
   // This is a hack to encode periods
   static public String urlEncodeExt(String str) {
-    String encoded_str = "";
+    String encoded_str = ""
     try {
-      encoded_str = str.replaceAll("\\.", "%2E"); // replace period
-      encoded_str = URLEncoder.encode(encoded_str, "UTF8");
+      encoded_str = str.replaceAll("\\.", "%2E") // replace period
+      encoded_str = URLEncoder.encode(encoded_str, "UTF8")
     } catch (UnsupportedEncodingException e) {
-      StringBuilder msg = new StringBuilder("urlEncode:").append(str);
-      LOG.error(msg.toString(), e);
+      StringBuilder msg = new StringBuilder("urlEncode:").append(str)
+      LOG.error(msg.toString(), e)
     }
-    return encoded_str;
+    return encoded_str
   }
 
   static public String urlEncode(String str) {
-    String encoded_str = "";
+    String encoded_str = ""
     try {
-      encoded_str = URLEncoder.encode(str, "UTF8");
+      encoded_str = URLEncoder.encode(str, "UTF8")
     } catch (UnsupportedEncodingException e) {
-      StringBuilder msg = new StringBuilder("urlEncode:").append(str);
-      LOG.error(msg.toString(), e);
+      StringBuilder msg = new StringBuilder("urlEncode:").append(str)
+      LOG.error(msg.toString(), e)
     }
-    return encoded_str;
+    return encoded_str
   }
 
   static public String urlDecode(String str) {
-    String decoded_str = "";
+    String decoded_str = ""
     try {
-      decoded_str = URLDecoder.decode(str, "UTF8");
+      decoded_str = URLDecoder.decode(str, "UTF8")
     } catch (UnsupportedEncodingException e) {
-      StringBuilder msg = new StringBuilder("urlDecode:").append(str);
-      LOG.error(msg.toString(), e);
+      StringBuilder msg = new StringBuilder("urlDecode:").append(str)
+      LOG.error(msg.toString(), e)
     }
-    return decoded_str;
+    return decoded_str
   }
 
 }

@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ikakara.awsinstance.util;
+package ikakara.awsinstance.util
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.*;
+import java.lang.annotation.Annotation
+import java.lang.reflect.Field
+import java.lang.reflect.Method
+import java.lang.reflect.*
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
@@ -27,39 +27,39 @@ import groovy.util.logging.Slf4j
 public class AnnotationUtil {
 
   static public Annotation[] findClassAnnotation(Class<?> clazz) {
-    return clazz.getAnnotations();
+    return clazz.getAnnotations()
   }
 
   static public Annotation[] findMethodAnnotation(Class<?> clazz, String methodName) {
 
-    Annotation[] annotations = null;
+    Annotation[] annotations = null
     try {
-      Class<?>[] params = null;
-      Method method = clazz.getDeclaredMethod(methodName, params);
+      Class<?>[] params = null
+      Method method = clazz.getDeclaredMethod(methodName, params)
       if (method != null) {
-        annotations = method.getAnnotations();
+        annotations = method.getAnnotations()
       }
     } catch (SecurityException e) {
-      e.printStackTrace();
+      e.printStackTrace()
     } catch (NoSuchMethodException e) {
-      e.printStackTrace();
+      e.printStackTrace()
     }
-    return annotations;
+    return annotations
   }
 
   static public Annotation[] findFieldAnnotation(Class<?> clazz, String fieldName) {
-    Annotation[] annotations = null;
+    Annotation[] annotations = null
     try {
-      Field field = clazz.getDeclaredField(fieldName);
+      Field field = clazz.getDeclaredField(fieldName)
       if (field != null) {
-        annotations = field.getAnnotations();
+        annotations = field.getAnnotations()
       }
     } catch (SecurityException e) {
-      e.printStackTrace();
+      e.printStackTrace()
     } catch (NoSuchFieldException e) {
-      e.printStackTrace();
+      e.printStackTrace()
     }
-    return annotations;
+    return annotations
   }
 
   /**
@@ -67,80 +67,80 @@ public class AnnotationUtil {
    */
   /*
   static public void main(String[] args) {
-  AnnotationUtil ai = new AnnotationUtil();
-  Annotation[] annotations;
-  Class<User> userClass = User.class;
-  String methodDoStuff = "doStuff";
-  String fieldId = "id";
-  String fieldAddress = "address";
+  AnnotationUtil ai = new AnnotationUtil()
+  Annotation[] annotations
+  Class<User> userClass = User.class
+  String methodDoStuff = "doStuff"
+  String fieldId = "id"
+  String fieldAddress = "address"
 
   // Find class annotations
-  annotations = ai.findClassAnnotation(be.fery.annotation.User.class);
+  annotations = ai.findClassAnnotation(be.fery.annotation.User.class)
   System.out.println("Annotation on class '" + userClass.getName()
-  + "' are:");
-  showAnnotations(annotations);
+  + "' are:")
+  showAnnotations(annotations)
 
   // Find method annotations
-  annotations = ai.findMethodAnnotation(User.class, methodDoStuff);
-  System.out.println("Annotation on method '" + methodDoStuff + "' are:");
-  showAnnotations(annotations);
+  annotations = ai.findMethodAnnotation(User.class, methodDoStuff)
+  System.out.println("Annotation on method '" + methodDoStuff + "' are:")
+  showAnnotations(annotations)
 
   // Find field annotations
-  annotations = ai.findFieldAnnotation(User.class, fieldId);
-  System.out.println("Annotation on field '" + fieldId + "' are:");
-  showAnnotations(annotations);
+  annotations = ai.findFieldAnnotation(User.class, fieldId)
+  System.out.println("Annotation on field '" + fieldId + "' are:")
+  showAnnotations(annotations)
 
-  annotations = ai.findFieldAnnotation(User.class, fieldAddress);
-  System.out.println("Annotation on field '" + fieldAddress + "' are:");
-  showAnnotations(annotations);
+  annotations = ai.findFieldAnnotation(User.class, fieldAddress)
+  System.out.println("Annotation on field '" + fieldAddress + "' are:")
+  showAnnotations(annotations)
 
   }
    */
   static public String findDynamoDBTable(Class<?> clazz) {
-    String tableName = null;
+    String tableName = null
 
-    Annotation[] ann = clazz.getAnnotations();
+    Annotation[] ann = clazz.getAnnotations()
     if (ann != null) {
       for (Annotation a : ann) {
-        tableName = MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBTable);
+        tableName = MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBTable)
         if (tableName != null) {
-          break;
+          break
         }
       }
     }
 
-    return tableName;
+    return tableName
   }
 
   static public Method[] findKeys(Class<?> clazz) {
-    Method[] keys = new Method[2];
+    Method[] keys = new Method[2]
 
-    Method[] m = clazz.getDeclaredMethods();
+    Method[] m = clazz.getDeclaredMethods()
 
     for (int i = 0; i < m.length; i++) {
-      Annotation[] ann = m[i].getDeclaredAnnotations();
+      Annotation[] ann = m[i].getDeclaredAnnotations()
       if (ann != null) {
         for (Annotation a : ann) {
-          String key1 = MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBHashKey);
+          String key1 = MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBHashKey)
           if (key1 != null) {
-            keys[0] = m[i];
-            break;
+            keys[0] = m[i]
+            break
           }
 
-          String key2 = MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBRangeKey);
+          String key2 = MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBRangeKey)
           if (key2 != null) {
-            keys[1] = m[i];
-            break;
+            keys[1] = m[i]
+            break
           }
         }
 
         if (keys[0] != null && keys[1] != null) {
-          break;
+          break
         }
       }
     }
 
-    return keys;
+    return keys
   }
 
   static public void showAnnotations(Annotation[] ann) {
@@ -151,31 +151,31 @@ public class AnnotationUtil {
           + " " + MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBHashKey)
           + " " + MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBRangeKey)
           + " " + MatcherUtil.extractAnnotation(a.toString(), MatcherUtil.ANNOTATION_DynamoDBAttribute)
-        );
+        )
       }
     }
   }
 
   static public void showDeclaredMethods(Class<?> c) {
-    Method[] m = c.getDeclaredMethods();
+    Method[] m = c.getDeclaredMethods()
     for (int i = 0; i < m.length; i++) {
-      System.out.println(m[i].getName());
-      showAnnotations(m[i].getDeclaredAnnotations());
+      System.out.println(m[i].getName())
+      showAnnotations(m[i].getDeclaredAnnotations())
     }
   }
 
   static public void showDeclaredFields(Class<?> c) {
-    Field[] m = c.getDeclaredFields();
+    Field[] m = c.getDeclaredFields()
     for (int i = 0; i < m.length; i++) {
-      System.out.println(m[i].getName());
-      showAnnotations(m[i].getDeclaredAnnotations());
+      System.out.println(m[i].getName())
+      showAnnotations(m[i].getDeclaredAnnotations())
     }
   }
 
   static public void showDeclaredAnnotations(Class<?> c) {
-    Annotation[] m = c.getDeclaredAnnotations();
+    Annotation[] m = c.getDeclaredAnnotations()
     for (int i = 0; i < m.length; i++) {
-      System.out.println(m[i].toString());
+      System.out.println(m[i].toString())
     }
   }
 

@@ -12,20 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ikakara.awsinstance.dao.dynamo;
+package ikakara.awsinstance.dao.dynamo
 
-import java.util.Map;
-import java.util.Date;
+import java.util.Map
+import java.util.Date
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
-import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore
+import com.amazonaws.services.dynamodbv2.document.Item
 
-import ikakara.awsinstance.dao.ICommandObject;
-import ikakara.awsinstance.util.CalendarUtil;
+import ikakara.awsinstance.dao.ICommandObject
+import ikakara.awsinstance.util.CalendarUtil
 
 /**
  *
@@ -35,157 +35,157 @@ import ikakara.awsinstance.util.CalendarUtil;
 @CompileStatic
 abstract public class ACreatedUpdatedObject extends ADynamoObject implements ICommandObject {
 
-  String created_time; // YYMMddHHmmss
-  String updated_time; // YYMMddHHmmss
+  String created_time // YYMMddHHmmss
+  String updated_time // YYMMddHHmmss
   // transient
-  protected Date createdDate = null;
-  protected Date updatedDate = null;
+  protected Date createdDate = null
+  protected Date updatedDate = null
 
   @Override
-  abstract public String tableName();
+  abstract public String tableName()
 
   @Override
-  abstract public Map initTable();
+  abstract public Map initTable()
 
   @Override
-  abstract public Object valueHashKey(); // future: return can be number or binary
+  abstract public Object valueHashKey() // future: return can be number or binary
 
   @Override
-  abstract public Object valueRangeKey();// future: return can be number or binary
+  abstract public Object valueRangeKey()// future: return can be number or binary
 
   @Override
-  abstract public String nameHashKey();
+  abstract public String nameHashKey()
 
   @Override
-  abstract public String nameRangeKey();
+  abstract public String nameRangeKey()
 
   @Override
-  abstract public String getId();
+  abstract public String getId()
 
   @Override
-  abstract public void setId(String s);
+  abstract public void setId(String s)
 
   @Override
   public void initParameters(Map params) {
     //if (params != null && !params.isEmpty()) {
-    created_time = (String) params.get("created_time");
-    updated_time = (String) params.get("updated_time");
+    created_time = (String) params.get("created_time")
+    updated_time = (String) params.get("updated_time")
     //}
   }
 
   @Override
   public boolean validate() {
-    return true; // needed to be used as "command object"
+    return true // needed to be used as "command object"
   }
 
   @Override
-  abstract public ADynamoObject newInstance(Item item);
+  abstract public ADynamoObject newInstance(Item item)
 
   @Override
   public void marshalAttributesIN(Item item) {
     //if (map != null && !map.isEmpty()) {
     if (item.isPresent("CreatedTime")) {
-      created_time = item.getString("CreatedTime");
+      created_time = item.getString("CreatedTime")
     }
     if (item.isPresent("UpdatedTime")) {
-      updated_time = item.getString("UpdatedTime");
+      updated_time = item.getString("UpdatedTime")
     }
     //}
   }
 
   @Override
   public Item marshalItemOUT(boolean bRemoveAttributeNull) {
-    Item outItem = new Item();
+    Item outItem = new Item()
 
     if (created_time != null && !"".equals(created_time)) {
-      outItem = outItem.withString("CreatedTime", created_time);
+      outItem = outItem.withString("CreatedTime", created_time)
     } else if (bRemoveAttributeNull) {
-      outItem = outItem.removeAttribute("CreatedTime");
+      outItem = outItem.removeAttribute("CreatedTime")
     }
     if (updated_time != null && !"".equals(updated_time)) {
-      outItem = outItem.withString("UpdatedTime", updated_time);
+      outItem = outItem.withString("UpdatedTime", updated_time)
     } else if (bRemoveAttributeNull) {
-      outItem = outItem.removeAttribute("UpdatedTime");
+      outItem = outItem.removeAttribute("UpdatedTime")
     }
 
-    return outItem;
+    return outItem
   }
 
   public ACreatedUpdatedObject withCreatedUpdated() {
-    Date now = new Date();
+    Date now = new Date()
 
-    setCreatedDate(now);
-    setUpdatedDate(now);
-    return this;
+    setCreatedDate(now)
+    setUpdatedDate(now)
+    return this
   }
 
   public ACreatedUpdatedObject withCreated(Date date) {
-    setCreatedDate(date);
-    return this;
+    setCreatedDate(date)
+    return this
   }
 
   public ACreatedUpdatedObject withUpdated(Date date) {
-    setUpdatedDate(date);
-    return this;
+    setUpdatedDate(date)
+    return this
   }
 
   public ACreatedUpdatedObject withUpdated() {
-    Date now = new Date();
+    Date now = new Date()
 
-    setUpdatedDate(now);
-    return this;
+    setUpdatedDate(now)
+    return this
   }
 
   @DynamoDBAttribute(attributeName = "CreatedTime")
   public String getCreatedTime() {
-    return created_time;
+    return created_time
   }
 
   public void setCreatedTime(String d) {
-    created_time = d;
+    created_time = d
   }
 
   @DynamoDBAttribute(attributeName = "UpdatedTime")
   public String getUpdatedTime() {
-    return updated_time;
+    return updated_time
   }
 
   public void setUpdatedTime(String d) {
-    updated_time = d;
+    updated_time = d
   }
 
   @DynamoDBIgnore
   public Date getCreatedDate() {
     if (createdDate == null) {
       if (created_time != null) {
-        createdDate = CalendarUtil.getDateFromString_CONCISE_MS(created_time);
+        createdDate = CalendarUtil.getDateFromString_CONCISE_MS(created_time)
       } else {
-        setCreatedDate(new Date());
+        setCreatedDate(new Date())
       }
     }
-    return createdDate;
+    return createdDate
   }
 
   public void setCreatedDate(Date d) {
-    createdDate = d;
-    created_time = CalendarUtil.getStringFromDate_CONCISE_MS(d);
+    createdDate = d
+    created_time = CalendarUtil.getStringFromDate_CONCISE_MS(d)
   }
 
   @DynamoDBIgnore
   public Date getUpdatedDate() {
     if (updatedDate == null) {
       if (updated_time != null) {
-        updatedDate = CalendarUtil.getDateFromString_CONCISE_MS(updated_time);
+        updatedDate = CalendarUtil.getDateFromString_CONCISE_MS(updated_time)
       } else {
-        setUpdatedDate(new Date());
+        setUpdatedDate(new Date())
       }
     }
-    return createdDate;
+    return createdDate
   }
 
   public void setUpdatedDate(Date d) {
-    updatedDate = d;
-    updated_time = CalendarUtil.getStringFromDate_CONCISE_MS(d);
+    updatedDate = d
+    updated_time = CalendarUtil.getStringFromDate_CONCISE_MS(d)
   }
 
 }

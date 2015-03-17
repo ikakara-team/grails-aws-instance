@@ -62,12 +62,12 @@ class FileUtil {
 
   // requires Java7
   static byte[] readAllBytes(File file) {
-    byte[] data = Files.readAllBytes(file.toPath());
+    byte[] data = Files.readAllBytes(file.toPath())
     return data
   }
 
   static String generateRandomFileName(String prefix, String ext = null) {
-    String random_chars = StringUtil.getRandomChars(RANDOMCHARS_LENGTH);
+    String random_chars = StringUtil.getRandomChars(RANDOMCHARS_LENGTH)
     return (prefix ? "${prefix}_" : '') + CalendarUtil.getStringFromDate_CONCISE(new Date()) + "_${random_chars}" + (ext ? ".${ext}" : '')
   }
 

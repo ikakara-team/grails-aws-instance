@@ -34,15 +34,15 @@ public class MatcherUtil {
   static public final ANNOTATION_DynamoDBAttribute = /@*DynamoDBAttribute(\(attributeName=(\w+)\))?/
 
   static public String extractAnnotation(String annotation, def pattern) {
-    String tableName = null;
+    String tableName = null
     def matcher = ( annotation =~ pattern )
     if(matcher && matcher[0]) {
-      tableName = "";
+      tableName = ""
       if(matcher[0].size() > 2) {
-        tableName = matcher[0][2];
+        tableName = matcher[0][2]
       }
     }
-    return tableName;
+    return tableName
   }
 
 }

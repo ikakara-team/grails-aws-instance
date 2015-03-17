@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ikakara.awsinstance.util;
+package ikakara.awsinstance.util
 
-import java.security.SecureRandom;
+import java.security.SecureRandom
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -27,19 +27,19 @@ import groovy.util.logging.Slf4j
 public class NumberUtil {
 
   static public int getRandomInt(int min, int max) {
-    SecureRandom rand = new SecureRandom();
-    int random_int = rand.nextInt(max - min + 1) + min;
-    return random_int;
+    SecureRandom rand = new SecureRandom()
+    int random_int = rand.nextInt(max - min + 1) + min
+    return random_int
   }
 
   static public void shuffleArray(int[] array) {
-    int index, temp;
-    SecureRandom random = new SecureRandom();
+    int index, temp
+    SecureRandom random = new SecureRandom()
     for (int i = array.length - 1; i > 0; i--) {
-      index = random.nextInt(i + 1);
-      temp = array[index];
-      array[index] = array[i];
-      array[i] = temp;
+      index = random.nextInt(i + 1)
+      temp = array[index]
+      array[index] = array[i]
+      array[i] = temp
     }
   }
 
