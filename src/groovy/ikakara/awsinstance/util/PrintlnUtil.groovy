@@ -14,12 +14,17 @@
  */
 package ikakara.awsinstance.util
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import com.amazonaws.AmazonClientException
 import com.amazonaws.AmazonServiceException
 
 /**
  * @author Allen
  */
+@Slf4j("LOG")
+@CompileStatic
 class PrintlnUtil {
 
   static AmazonServiceException(String header, AmazonServiceException ase) {

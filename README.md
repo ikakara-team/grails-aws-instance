@@ -16,6 +16,13 @@ Installation:
   * Create and configure S3 public bucket: http://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-2
 3. grails-app/conf/BuildConfig.groovy:
 ```
+  dependencies {
+...
+    // use a version of the sdk that support SES, S3, etc
+    compile 'com.amazonaws:aws-java-sdk:1.9.24' // http://aws.amazon.com/releasenotes/Java?browse=1
+...
+  }
+
   plugins {
 ...
     compile ':aws-instance:0.1'
