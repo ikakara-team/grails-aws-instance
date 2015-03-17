@@ -156,4 +156,5 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 
 History:
 --------------
+0.2 - FileUtil
 0.1 - initial checkin
