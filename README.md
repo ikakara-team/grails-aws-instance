@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.3'
+    compile ':aws-instance:0.3.1'
 ...
   }
 ```
@@ -158,7 +158,8 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
-0.3 - awsStorageService.getPublicBucketHost()
-0.2 - FileUtil
-0.1 - initial checkin
+0.3.1 - cleanup semicolons
+0.3   - awsStorageService.getPublicBucketHost()
+0.2   - FileUtil
+0.1   - initial checkin
 ```
