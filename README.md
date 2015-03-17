@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.1'
+    compile ':aws-instance:0.2'
 ...
   }
 ```
