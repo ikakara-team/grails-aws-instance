@@ -16,6 +16,7 @@ package ikakara.awsinstance.aws
 
 import groovy.transform.Synchronized
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
@@ -34,6 +35,7 @@ import com.amazonaws.services.dynamodbv2.document.Index
  *
  * @author Allen
  */
+@Slf4j("LOG")
 @CompileStatic
 public class AWSInstance {
   private static final lock_dynamo_table = new Object()
@@ -56,7 +58,8 @@ public class AWSInstance {
     String key = tableName + "-" + indexName
     Index index = _dynamoIndexes.get(key)
     if(index == null) {
-      index = new Index(DYNAMO_CLIENT(), indexName, DYNAMO_TABLE(tableName))
+      LOG.info "tbl: ${tableName} idx: ${indexName}"
+      index = DYNAMO_TABLE(tableName).getIndex(indexName)
       _dynamoIndexes.put(key, index)
     }
     return index
@@ -89,7 +92,7 @@ public class AWSInstance {
     }
     return _dynamoDB
   }
-/*
+  /*
   private static AmazonMobileAnalyticsClient _analyticsClient = null //new AmazonMobileAnalyticsClient(AuthCredentials.instance)
   static public AmazonMobileAnalyticsClient ANALYTICS_CLIENT() {
     if(_analyticsClient == null) {
@@ -97,33 +100,37 @@ public class AWSInstance {
     }
     return _analyticsClient
   }
-*/
+  */
   @Synchronized()
   static private init_dynamo_db() {
-    try {
-      println "AWSInstance - DynamoDB created ================================================="
-      _dynamoDB = new DynamoDB(DYNAMO_CLIENT())
-    } catch(e) {
-      println e
+    if(_dynamoDB == null) {
+      try {
+        LOG.info "AWSInstance - DynamoDB created ================================================="
+        _dynamoDB = new DynamoDB(DYNAMO_CLIENT())
+      } catch(e) {
+        LOG.error e.message
+      }
     }
   }
-/*
+  /*
   @Synchronized()
   static private init_analytics_client() {
-    try {
-      println "AWSInstance - AmazonMobileAnalyticsClient created ================================================="
-      _analyticsClient = new AmazonMobileAnalyticsClient(AuthCredentials.instance)
-    } catch(e) {
-      println e
+    if(_analyticsClient == null) {
+      try {
+        LOG.info "AWSInstance - AmazonMobileAnalyticsClient created ================================================="
+        _analyticsClient = new AmazonMobileAnalyticsClient(AuthCredentials.instance)
+      } catch(e) {
+        LOG.error e.message
+      }
     }
   }
-*/
+  */
   protected void finalize() throws Throwable {
     try {
       // clean indexes
-      _dynamoIndexes.clear()
+      _dynamoIndexes?.clear()
       // clean tables
-      _dynamoTables.clear()
+      _dynamoTables?.clear()
       _dynamoDB = null
       _dynamoClient?.shutdown()
       _dynamoClient = null
