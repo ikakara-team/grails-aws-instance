@@ -47,8 +47,9 @@ import com.amazonaws.services.dynamodbv2.util.Tables
 import com.amazonaws.services.dynamodbv2.document.TableCollection
 import com.amazonaws.services.dynamodbv2.document.Table
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
+
 import ikakara.awsinstance.aws.AWSInstance
-import ikakara.awsinstance.util.AnnotationUtil
 import ikakara.awsinstance.dao.dynamo.ADynamoObject
 
 /**
@@ -87,7 +88,8 @@ public class DynamoHelper {
     String retTableName = null
 
     String className = clazz.getSimpleName()
-    String tableName = AnnotationUtil.findDynamoDBTable(clazz)
+
+    String tableName =  clazz.getAnnotation(DynamoDBTable)?.tableName()
     if (tableName == null || "".equals(tableName)) {
       // Use the class name
       tableName = className
@@ -145,7 +147,7 @@ public class DynamoHelper {
 
     try {
       TableDescription tableDescription = AWSInstance.DYNAMO_CLIENT().describeTable(
-              new DescribeTableRequest().withTableName(tableName)).getTable()
+        new DescribeTableRequest().withTableName(tableName)).getTable()
       map = tableDescriptionToMap(tableDescription)
     } catch (ResourceNotFoundException rnfe) {
 
