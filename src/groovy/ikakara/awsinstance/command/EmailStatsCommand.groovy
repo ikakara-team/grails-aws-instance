@@ -20,7 +20,7 @@ import grails.validation.Validateable
 /**
  * @author Allen
  */
-@ToString(ignoreNulls=true)
+@ToString(includePackage=false, ignoreNulls=true)
 @Validateable(nullable=true)
 class EmailStatsCommand {
 
