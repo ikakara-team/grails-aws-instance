@@ -15,12 +15,16 @@
 package ikakara.awsinstance.command
 
 import org.codehaus.groovy.grails.web.util.StreamCharBuffer
-import grails.validation.Validateable
+
+import groovy.transform.ToString
 import groovy.text.GStringTemplateEngine
+
+import grails.validation.Validateable
 
 /**
  * @author Allen
  */
+@ToString(ignoreNulls=true)
 @Validateable(nullable=true)
 class EmailCommand {
   static public final EMAIL_REGX = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/
