@@ -30,6 +30,10 @@ class EmailCommand {
   String html = ''
   String text = ''
 
+  boolean toValid() {
+    return to.size() > 0
+  }
+
   //to
   EmailCommand withTo(String str) {
     if(str =~ EMAIL_REGX) {
