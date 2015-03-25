@@ -23,6 +23,8 @@ import groovy.text.GStringTemplateEngine
  */
 @Validateable(nullable=true)
 class EmailCommand {
+  static public final EMAIL_REGX = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/
+
   List<String> to = []
   String subject = ''
   String html = ''
@@ -30,12 +32,17 @@ class EmailCommand {
 
   //to
   EmailCommand withTo(String str) {
-    to.add(str)
+    if(str =~ EMAIL_REGX) {
+      to.add(str)
+    }
     return this
   }
 
   EmailCommand withTo(List<String> list) {
-    to = list
+    to = []
+    list.each { str ->
+      withTo(str)
+    }
     return this
   }
 

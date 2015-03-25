@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.3.3'
+    compile ':aws-instance:0.3.4'
 ...
   }
 ```
@@ -158,6 +158,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.3.4 - validate EmailCommand w/ REGEX
 0.3.3 - cleanup unused classes
 0.3.2 - fix creating DynamoDB index
 0.3.1 - cleanup semicolons
