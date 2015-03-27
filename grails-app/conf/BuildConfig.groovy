@@ -15,7 +15,7 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.9.24') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.9.27') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false
     }
     
