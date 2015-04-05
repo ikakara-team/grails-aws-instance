@@ -17,6 +17,7 @@ package ikakara.awsinstance.dao.dynamo
 import java.util.Map
 import java.util.Date
 
+import groovy.transform.ToString
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -31,6 +32,7 @@ import ikakara.awsinstance.util.CalendarUtil
  *
  * @author Allen
  */
+@ToString(includePackage=false, ignoreNulls=true, includeSuper=true)
 @Slf4j("LOG")
 @CompileStatic
 abstract public class ACreatedUpdatedObject extends ADynamoObject implements ICommandObject {
