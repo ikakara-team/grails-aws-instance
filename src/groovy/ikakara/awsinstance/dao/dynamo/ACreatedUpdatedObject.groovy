@@ -32,7 +32,7 @@ import ikakara.awsinstance.util.CalendarUtil
  *
  * @author Allen
  */
-@ToString(includePackage=false, ignoreNulls=true, includeSuper=true)
+@ToString(includePackage=false, ignoreNulls=true)
 @Slf4j("LOG")
 @CompileStatic
 abstract public class ACreatedUpdatedObject extends ADynamoObject implements ICommandObject {
