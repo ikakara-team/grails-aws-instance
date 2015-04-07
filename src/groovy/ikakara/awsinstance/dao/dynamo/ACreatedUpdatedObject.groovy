@@ -16,6 +16,7 @@ package ikakara.awsinstance.dao.dynamo
 
 import java.util.Map
 import java.util.Date
+import java.util.Calendar
 
 import groovy.transform.ToString
 import groovy.transform.CompileStatic
@@ -188,6 +189,16 @@ abstract public class ACreatedUpdatedObject extends ADynamoObject implements ICo
   public void setUpdatedDate(Date d) {
     updatedDate = d
     updated_time = CalendarUtil.getStringFromDate_CONCISE_MS(d)
+  }
+
+  @DynamoDBIgnore
+  public long getCreatedDaysAgo() {
+    return CalendarUtil.getDateDiff(new Date(), getCreatedDate(), Calendar.DATE)
+  }
+
+  @DynamoDBIgnore
+  public long getUpdatedDaysAgo() {
+    return CalendarUtil.getDateDiff(new Date(), getUpdatedDate(), Calendar.DATE)
   }
 
 }

@@ -19,13 +19,13 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.27' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.28.1' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
   plugins {
 ...
-    compile ':aws-instance:0.4.1'
+    compile ':aws-instance:0.4.2'
 ...
   }
 ```
@@ -158,6 +158,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.4.2 - created/updated days ago
 0.4.1 - toString
 0.3.7 - fixes EmailCommand
 0.2   - FileUtil
