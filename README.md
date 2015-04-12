@@ -19,13 +19,13 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.28.1' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.30' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
   plugins {
 ...
-    compile ':aws-instance:0.4.2'
+    compile ':aws-instance:0.5'
 ...
   }
 ```
@@ -47,7 +47,7 @@ grails {
 }
 ```
 
-Usage:
+AWS Client Usage:
 --------------
 ```
 import ikakara.awsinstance.aws.AWSInstance
@@ -57,6 +57,15 @@ AWSInstance.SES_CLIENT()
 
 // AmazonS3 Client
 AWSInstance.S3_CLIENT()
+
+// AmazonSQS Client
+AWSInstance.SQS_CLIENT()
+
+// AmazonCognitoIdentity Client
+AWSInstance.COGNITO_CLIENT()
+
+// AmazonIdentityManagement Client
+AWSInstance.IAM_CLIENT()
 ```
 
 Services:
@@ -84,6 +93,19 @@ Services:
   * ```String getURL(String lobBucketName, String key = null, bHostForm = true)```
   * ```String getObjectURL(String lobBucketName, String rootfolder, String path)```
   * ```ObjectListing getObjectList(String lobBucketName, String rootfolder, String path)```
+* awsIdentityService
+  * ```responseData generateReport()```
+  * ```list<IAMCredential> getReport()```
+  * ```jsonData listPool(int max = MAX_LIST_SIZE)```
+  * ```responseData describePool(String poolArn)```
+  * ```responseData createPool(String poolName, String providerDomain, boolean allowUnauthenticated=false)```
+  * ```responseData updatePool(String poolArn)```
+  * ```void deletePool(String poolArn)```
+  * ```jsonData listRole(String poolArn)```
+  * ```void setRoles(String poolArn, String authenticated, String unauthenticated)```
+  * ```void setRoles(String poolArn, Map<String, String> roles)```
+  * ```jsonData listIdentity(String poolArn, int max = MAX_LIST_SIZE)```
+  * ```responesData getDeveloperToken(String poolArn, String developerArn, String userId)```
 
 Examples:
 --------------
@@ -158,8 +180,8 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
-0.4.2 - created/updated days ago
-0.4.1 - toString
+0.5   - awsIdentityService - cognito, iam
+0.4.2 - dynamoDb tweaks
 0.3.7 - fixes EmailCommand
 0.2   - FileUtil
 0.1   - initial checkin

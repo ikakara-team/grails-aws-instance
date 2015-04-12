@@ -30,7 +30,7 @@ class PrintlnUtil {
   static AmazonServiceException(String header, AmazonServiceException ase) {
     StringBuilder sb = new StringBuilder(header)
     sb << "\nCaught an AmazonServiceException, which means your request made it " +
-          "to Amazon S3, but was rejected with an error response for some reason.\n"
+          "to Amazon, but was rejected with an error response for some reason.\n"
     sb << "Error Message:    " << ase.message << '\n'
     sb << "HTTP Status Code: " << ase.statusCode << '\n'
     sb << "AWS Error Code:   " << ase.errorCode << '\n'
@@ -42,7 +42,7 @@ class PrintlnUtil {
   static AmazonClientException(String header, AmazonClientException ace) {
     StringBuilder sb = new StringBuilder(header)
     sb << "\nCaught an AmazonClientException, which means the client encountered " +
-          "a serious internal problem while trying to communicate with S3, " +
+          "a serious internal problem while trying to communicate with Amazon, " +
           "such as not being able to access the network.\n"
     sb << "Error Message: " << ace.message
     println sb

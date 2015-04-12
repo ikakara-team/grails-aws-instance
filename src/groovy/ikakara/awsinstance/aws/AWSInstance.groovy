@@ -25,6 +25,10 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.sqs.AmazonSQS
 import com.amazonaws.services.sqs.AmazonSQSClient
+import com.amazonaws.services.cognitoidentity.AmazonCognitoIdentity
+import com.amazonaws.services.cognitoidentity.AmazonCognitoIdentityClient
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagement
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient
 
 //import com.amazonaws.services.mobileanalytics.AmazonMobileAnalyticsClient
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
@@ -85,6 +89,16 @@ public class AWSInstance {
     return _sqsClient
   }
 
+  private static AmazonCognitoIdentity _cognitoClient = new AmazonCognitoIdentityClient(AuthCredentials.instance)
+  static public AmazonCognitoIdentity COGNITO_CLIENT() {
+    return _cognitoClient
+  }
+
+  private static AmazonIdentityManagement _iamClient = new AmazonIdentityManagementClient(AuthCredentials.instance)
+  static public AmazonIdentityManagement IAM_CLIENT() {
+    return _iamClient
+  }
+
   private static  DynamoDB _dynamoDB = null
   static public DynamoDB DYNAMO_DB() {
     if(_dynamoDB == null) {
@@ -95,12 +109,12 @@ public class AWSInstance {
   /*
   private static AmazonMobileAnalyticsClient _analyticsClient = null //new AmazonMobileAnalyticsClient(AuthCredentials.instance)
   static public AmazonMobileAnalyticsClient ANALYTICS_CLIENT() {
-    if(_analyticsClient == null) {
-      init_analytics_client()
-    }
-    return _analyticsClient
+  if(_analyticsClient == null) {
+  init_analytics_client()
   }
-  */
+  return _analyticsClient
+  }
+   */
   @Synchronized()
   static private init_dynamo_db() {
     if(_dynamoDB == null) {
@@ -115,16 +129,16 @@ public class AWSInstance {
   /*
   @Synchronized()
   static private init_analytics_client() {
-    if(_analyticsClient == null) {
-      try {
-        LOG.info "AWSInstance - AmazonMobileAnalyticsClient created ================================================="
-        _analyticsClient = new AmazonMobileAnalyticsClient(AuthCredentials.instance)
-      } catch(e) {
-        LOG.error e.message
-      }
-    }
+  if(_analyticsClient == null) {
+  try {
+  LOG.info "AWSInstance - AmazonMobileAnalyticsClient created ================================================="
+  _analyticsClient = new AmazonMobileAnalyticsClient(AuthCredentials.instance)
+  } catch(e) {
+  LOG.error e.message
   }
-  */
+  }
+  }
+   */
   protected void finalize() throws Throwable {
     try {
       // clean indexes
@@ -132,6 +146,7 @@ public class AWSInstance {
       // clean tables
       _dynamoTables?.clear()
       _dynamoDB = null
+      // shutdown clients
       _dynamoClient?.shutdown()
       _dynamoClient = null
       _sesClient?.shutdown()
@@ -140,6 +155,10 @@ public class AWSInstance {
       _s3Client = null
       _sqsClient?.shutdown()
       _sqsClient = null
+      _cognitoClient?.shutdown()
+      _cognitoClient = null
+      _iamClient?.shutdown()
+      _iamClient = null
       //_analyticsClient?.shutdown()
       //_analyticsClient = null
     } finally {

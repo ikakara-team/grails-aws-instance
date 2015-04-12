@@ -1,9 +1,12 @@
 import ikakara.awsinstance.aws.AuthCredentials
 
 class AwsInstanceGrailsPlugin {
-  def version = "0.4.2"
+  def version = "0.5"
   def grailsVersion = "2.2 > *"
   def pluginExcludes = [
+    "grails-app/i18n/*",
+    "grails-app/views/error.gsp",
+    "grails-app/views/index.gsp",
     "web-app/**"
   ]
   def title = "AWS Instance"

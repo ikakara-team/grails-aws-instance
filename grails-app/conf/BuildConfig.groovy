@@ -15,14 +15,16 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.9.28.1') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.9.30') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false
     }
-    
+
     // http://mvnrepository.com/artifact/com.fasterxml.jackson.core
-    compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.2'
+
+    compile 'com.opencsv:opencsv:3.3' // http://opencsv.sourceforge.net/
 
     compile 'com.github.slugify:slugify:2.1.3' // https://github.com/slugify/slugify
   }
