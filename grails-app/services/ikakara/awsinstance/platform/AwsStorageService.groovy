@@ -29,7 +29,6 @@ import ikakara.awsinstance.aws.AWSInstance
 import ikakara.awsinstance.util.PrintlnUtil
 
 class AwsStorageService implements InitializingBean {
-
   static transactional = false
 
   public static final int CHUNK_BYTESIZE = 4096
