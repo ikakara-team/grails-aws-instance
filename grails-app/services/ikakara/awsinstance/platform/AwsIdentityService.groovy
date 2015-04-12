@@ -219,10 +219,9 @@ class AwsIdentityService {
     try {
       Map mapLogin = [:]
       mapLogin[developerId] = userId
-      println mapLogin
       def req = new GetOpenIdTokenForDeveloperIdentityRequest().withIdentityPoolId(poolArn).withLogins(mapLogin)
       def response = AWSInstance.COGNITO_CLIENT().getOpenIdTokenForDeveloperIdentity(req)
-      return response
+      return [response.identityId, response.token]
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("getDeveloperToken: ", ase)
     } catch (AmazonClientException ace) {

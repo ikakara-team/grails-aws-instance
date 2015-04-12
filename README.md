@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.5'
+    compile ':aws-instance:0.5.1'
 ...
   }
 ```
@@ -104,8 +104,8 @@ Services:
   * ```jsonData listRole(String poolArn)```
   * ```void setRoles(String poolArn, String authenticated, String unauthenticated)```
   * ```void setRoles(String poolArn, Map<String, String> roles)```
-  * ```jsonData listIdentity(String poolArn, int max = MAX_LIST_SIZE)```
-  * ```responesData getDeveloperToken(String poolArn, String developerArn, String userId)```
+  * ```String listIdentity(String poolArn, int max = MAX_LIST_SIZE)```
+  * ```[identityId, token] getDeveloperToken(String poolArn, String developerArn, String userId)```
 
 Examples:
 --------------
@@ -180,6 +180,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.5.1 - tweak returns for awsIdentityService
 0.5   - awsIdentityService - cognito, iam
 0.4.2 - dynamoDb tweaks
 0.3.7 - fixes EmailCommand
