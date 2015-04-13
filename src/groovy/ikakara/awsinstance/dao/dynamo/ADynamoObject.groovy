@@ -110,7 +110,7 @@ abstract public class ADynamoObject implements IDynamoTable {
 
       bRet = true
     } catch (ConditionalCheckFailedException ccfe) {
-      LOG.warn("create " + tableName() + ":" + ccfe.getMessage())
+      LOG.error("create " + tableName() + ":" + ccfe.getMessage())
     } catch (Exception e) {
       LOG.error("create:" + e.getMessage())
     }

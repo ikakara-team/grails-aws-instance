@@ -84,11 +84,11 @@ class FileUtil {
     if (dotPos != -1) {
       extension = filename.substring(dotPos + 1).toLowerCase()
       if(!ACCEPTABLE_EXTENSIONS?.contains(extension)) {
-        LOG.warn "File extension ${extension} is not valid."
+        LOG.error "File extension ${extension} is not valid."
         isValid = false
       }
     } else {
-      LOG.warn "No extension found on file"
+      LOG.error "No extension found on file"
       isValid = false
     }
 
