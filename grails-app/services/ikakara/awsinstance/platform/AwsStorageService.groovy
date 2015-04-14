@@ -38,7 +38,7 @@ class AwsStorageService implements InitializingBean {
 
   def grailsApplication
 
-  void afterPropertiesSet() throws Exception {
+  void afterPropertiesSet() {
     // We should throw an exception if the PUBLIC_BUCKET contains any dots
     PUBLIC_BUCKET = grailsApplication.config.grails.plugin.awsinstance?.s3.bucketName
 
@@ -177,5 +177,4 @@ class AwsStorageService implements InitializingBean {
     }
     return sb
   }
-
 }

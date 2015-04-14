@@ -17,7 +17,6 @@ package ikakara.awsinstance.dao;
 import java.util.Map;
 
 /**
- *
  * @author Allen
  */
 public interface ICommandObject {
@@ -26,8 +25,7 @@ public interface ICommandObject {
 
   void setId(String s);
 
-  void initParameters(Map params);
+  void initParameters(@SuppressWarnings("rawtypes") Map params);
 
   boolean validate();
-
 }

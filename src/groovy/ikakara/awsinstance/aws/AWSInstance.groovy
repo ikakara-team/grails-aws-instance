@@ -14,54 +14,51 @@
  */
 package ikakara.awsinstance.aws
 
-import groovy.transform.Synchronized
 import groovy.transform.CompileStatic
+import groovy.transform.Synchronized
 import groovy.util.logging.Slf4j
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.sqs.AmazonSQS
-import com.amazonaws.services.sqs.AmazonSQSClient
 import com.amazonaws.services.cognitoidentity.AmazonCognitoIdentity
 import com.amazonaws.services.cognitoidentity.AmazonCognitoIdentityClient
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.services.dynamodbv2.document.DynamoDB
+import com.amazonaws.services.dynamodbv2.document.Index
+import com.amazonaws.services.dynamodbv2.document.Table
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagement
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient
-
-//import com.amazonaws.services.mobileanalytics.AmazonMobileAnalyticsClient
-import com.amazonaws.services.dynamodbv2.document.DynamoDB
-import com.amazonaws.services.dynamodbv2.document.Table
-import com.amazonaws.services.dynamodbv2.document.Index
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
+import com.amazonaws.services.sqs.AmazonSQS
+import com.amazonaws.services.sqs.AmazonSQSClient
 
 /**
- *
  * @author Allen
  */
-@Slf4j("LOG")
 @CompileStatic
-public class AWSInstance {
+@Slf4j("LOG")
+class AWSInstance {
   private static final lock_dynamo_table = new Object()
   private static final lock_dynamo_index = new Object()
 
-  private static HashMap<String, Table> _dynamoTables = new HashMap<>()
+  private static Map<String, Table> _dynamoTables = [:]
   @Synchronized("lock_dynamo_table")
-  static public Table DYNAMO_TABLE(String tableName) {
-    Table table = _dynamoTables.get(tableName)
-    if(table == null) {
+  static Table DYNAMO_TABLE(String tableName) {
+    Table table = _dynamoTables[tableName]
+    if(!table) {
       table = DYNAMO_DB().getTable(tableName)
-      _dynamoTables.put(tableName, table)
+      _dynamoTables[tableName] = table
     }
     return table
   }
 
-  private static HashMap<String, Index> _dynamoIndexes = new HashMap<>()
+  private static Map<String, Index> _dynamoIndexes = [:]
   @Synchronized("lock_dynamo_index")
-  static public Index DYNAMO_INDEX(String tableName, String indexName) {
+  static Index DYNAMO_INDEX(String tableName, String indexName) {
     String key = tableName + "-" + indexName
-    Index index = _dynamoIndexes.get(key)
-    if(index == null) {
+    Index index = _dynamoIndexes[key]
+    if(!index) {
       LOG.info "tbl: ${tableName} idx: ${indexName}"
       index = DYNAMO_TABLE(tableName).getIndex(indexName)
       _dynamoIndexes.put(key, index)
@@ -69,47 +66,47 @@ public class AWSInstance {
     return index
   }
 
-  private static  AmazonDynamoDB _dynamoClient = new AmazonDynamoDBClient(AuthCredentials.instance)
-  static public AmazonDynamoDB DYNAMO_CLIENT() {
+  private static AmazonDynamoDB _dynamoClient = new AmazonDynamoDBClient(AuthCredentials.instance)
+  static AmazonDynamoDB DYNAMO_CLIENT() {
     return _dynamoClient
   }
 
   private static AmazonSimpleEmailServiceClient _sesClient = new AmazonSimpleEmailServiceClient(AuthCredentials.instance)
-  static public AmazonSimpleEmailServiceClient SES_CLIENT() {
+  static AmazonSimpleEmailServiceClient SES_CLIENT() {
     return _sesClient
   }
 
   private static AmazonS3 _s3Client = new AmazonS3Client(AuthCredentials.instance)
-  static public AmazonS3 S3_CLIENT() {
+  static AmazonS3 S3_CLIENT() {
     return _s3Client
   }
 
   private static AmazonSQS _sqsClient = new AmazonSQSClient(AuthCredentials.instance)
-  static public AmazonSQS SQS_CLIENT() {
+  static AmazonSQS SQS_CLIENT() {
     return _sqsClient
   }
 
   private static AmazonCognitoIdentity _cognitoClient = new AmazonCognitoIdentityClient(AuthCredentials.instance)
-  static public AmazonCognitoIdentity COGNITO_CLIENT() {
+  static AmazonCognitoIdentity COGNITO_CLIENT() {
     return _cognitoClient
   }
 
   private static AmazonIdentityManagement _iamClient = new AmazonIdentityManagementClient(AuthCredentials.instance)
-  static public AmazonIdentityManagement IAM_CLIENT() {
+  static AmazonIdentityManagement IAM_CLIENT() {
     return _iamClient
   }
 
-  private static  DynamoDB _dynamoDB = null
-  static public DynamoDB DYNAMO_DB() {
-    if(_dynamoDB == null) {
+  private static DynamoDB _dynamoDB
+  static DynamoDB DYNAMO_DB() {
+    if(!_dynamoDB) {
       init_dynamo_db()
     }
     return _dynamoDB
   }
   /*
-  private static AmazonMobileAnalyticsClient _analyticsClient = null //new AmazonMobileAnalyticsClient(AuthCredentials.instance)
-  static public AmazonMobileAnalyticsClient ANALYTICS_CLIENT() {
-  if(_analyticsClient == null) {
+  private static AmazonMobileAnalyticsClient _analyticsClient //new AmazonMobileAnalyticsClient(AuthCredentials.instance)
+  static AmazonMobileAnalyticsClient ANALYTICS_CLIENT() {
+  if(!_analyticsClient) {
   init_analytics_client()
   }
   return _analyticsClient
@@ -117,19 +114,21 @@ public class AWSInstance {
    */
   @Synchronized()
   static private init_dynamo_db() {
-    if(_dynamoDB == null) {
-      try {
-        LOG.info "AWSInstance - DynamoDB created ================================================="
-        _dynamoDB = new DynamoDB(DYNAMO_CLIENT())
-      } catch(e) {
-        LOG.error e.message
-      }
+    if(_dynamoDB) {
+      return
+    }
+
+    try {
+      LOG.info "AWSInstance - DynamoDB created ================================================="
+      _dynamoDB = new DynamoDB(DYNAMO_CLIENT())
+    } catch(e) {
+      LOG.error e.message
     }
   }
   /*
   @Synchronized()
   static private init_analytics_client() {
-  if(_analyticsClient == null) {
+  if(!_analyticsClient) {
   try {
   LOG.info "AWSInstance - AmazonMobileAnalyticsClient created ================================================="
   _analyticsClient = new AmazonMobileAnalyticsClient(AuthCredentials.instance)

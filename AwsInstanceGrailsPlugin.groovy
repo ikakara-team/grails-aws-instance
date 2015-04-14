@@ -4,9 +4,6 @@ class AwsInstanceGrailsPlugin {
   def version = "0.5.2"
   def grailsVersion = "2.2 > *"
   def pluginExcludes = [
-    "grails-app/i18n/*",
-    "grails-app/views/error.gsp",
-    "grails-app/views/index.gsp",
     "web-app/**"
   ]
   def title = "AWS Instance"
@@ -22,7 +19,7 @@ class AwsInstanceGrailsPlugin {
     println 'Configuring AwsInstance config ...' + application.mergedConfig.conf.grails.plugin.awsinstance
 
     def conf = appCtx.grailsApplication.config.grails.plugin.awsinstance
-    AuthCredentials.instance.init(conf.accessKey, conf.secretKey)
+    AuthCredentials.init(conf.accessKey, conf.secretKey)
 
     println '... finished configuring AwsInstance config'
   }

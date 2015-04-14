@@ -14,12 +14,14 @@
  */
 package ikakara.awsinstance.command
 
-import groovy.transform.ToString
 import grails.validation.Validateable
+import groovy.transform.CompileStatic
+import groovy.transform.ToString
 
 /**
  * @author Allen
  */
+@CompileStatic
 @ToString(includePackage=false, ignoreNulls=true)
 @Validateable(nullable=true)
 class EmailStatsCommand {

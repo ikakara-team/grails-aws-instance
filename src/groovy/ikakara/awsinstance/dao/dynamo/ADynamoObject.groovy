@@ -14,112 +14,76 @@
  */
 package ikakara.awsinstance.dao.dynamo
 
-import java.util.List
-import java.util.ArrayList
-import java.util.Map
-
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException
-
+import com.amazonaws.services.dynamodbv2.document.DeleteItemOutcome
+import com.amazonaws.services.dynamodbv2.document.Expected
 import com.amazonaws.services.dynamodbv2.document.Item
 import com.amazonaws.services.dynamodbv2.document.ItemCollection
-import com.amazonaws.services.dynamodbv2.document.Expected
-import com.amazonaws.services.dynamodbv2.document.PutItemOutcome
-import com.amazonaws.services.dynamodbv2.document.DeleteItemOutcome
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
 import com.amazonaws.services.dynamodbv2.document.LowLevelResultListener
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException
 
 import ikakara.awsinstance.aws.AWSInstance
 
 /**
- *
  * @author Allen
  */
-@Slf4j("LOG")
 @CompileStatic
-abstract public class ADynamoObject implements IDynamoTable {
-
-  @Override
-  abstract public String tableName()
-
-  @Override
-  abstract public Map initTable()
-
-  @Override
-  abstract public Object valueHashKey() // future: return can be number or binary
-
-  @Override
-  abstract public Object valueRangeKey()// future: return can be number or binary
-
-  @Override
-  abstract public String nameHashKey()
-
-  @Override
-  abstract public String nameRangeKey()
-
-  @Override
-  abstract public void marshalAttributesIN(Item item)
-
-  @Override
-  abstract public Item marshalItemOUT(boolean bRemoveAttributeNull)
-
-  @Override
-  abstract public ADynamoObject newInstance(Item item)
+@Slf4j("LOG")
+abstract class ADynamoObject implements IDynamoTable {
 
   // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LowLevelJavaItemCRUD.html
-  public boolean load() {
-    boolean bRet = false
+  boolean load() {
 
-    if (valueHashKey() != null) {
+    if (valueHashKey()) {
       try {
-        Item item = null
+        Item item
 
-        if (nameRangeKey() != null && !"".equals(nameRangeKey())) {
+        if (nameRangeKey()) {
           item = AWSInstance.DYNAMO_TABLE(tableName()).getItem(nameHashKey(), valueHashKey(), nameRangeKey(), valueRangeKey())
         } else {
           item = AWSInstance.DYNAMO_TABLE(tableName()).getItem(nameHashKey(), valueHashKey())
         }
 
-        LOG.info("load " + tableName() + ":" + (item != null ? item.asMap() : null))
-        if (item != null) {
+        LOG.info("load ${tableName()}:${(item ? item.asMap() : null)}")
+        if (item) {
           marshalAttributesIN(item)
-          bRet = true
+          return true
         }
       } catch (IllegalArgumentException e) {
-        LOG.error("load:" + e.getMessage())
+        LOG.error("load:$e.message")
       }
     }
 
-    return bRet
+    return false
   }
 
-  public boolean create() {
-    boolean bRet = false
+  boolean create() {
     try {
       // Save the item
       Item item = marshalItemOUT(true)
       setKey(item)
-      LOG.info("create item:" + item)
+      LOG.info("create item:$item")
 
       Expected expected = setExpectedNotExist()
       PutItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).putItem(item, expected)
 
-      bRet = true
+      return true
     } catch (ConditionalCheckFailedException ccfe) {
-      LOG.error("create " + tableName() + ":" + ccfe.getMessage())
-    } catch (Exception e) {
-      LOG.error("create:" + e.getMessage())
+      LOG.error("create ${tableName()}:$ccfe.message")
+    } catch (e) {
+      LOG.error("create:$e.message")
     }
-    return bRet
+    return false
   }
 
   // Save all attributes; will remove attributes w/ null
-  public boolean save() {
-    boolean bRet = false
+  boolean save() {
     try {
       // Save the item
       Item item = marshalItemOUT(true)
@@ -127,17 +91,16 @@ abstract public class ADynamoObject implements IDynamoTable {
 
       PutItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).putItem(item)
 
-      LOG.info("save:" + result)
-      bRet = true
-    } catch (Exception e) {
-      LOG.error("save " + tableName() + ":" + e.getMessage())
+      LOG.info("save:$result")
+      return true
+    } catch (e) {
+      LOG.error("save ${tableName()}:$e.message")
     }
-    return bRet
+    return false
   }
 
   // only save attributes that are non-null
-  public boolean update() {
-    boolean bRet = false
+  boolean update() {
     try {
       // Save the item
       Item item = marshalItemOUT(false)
@@ -145,43 +108,39 @@ abstract public class ADynamoObject implements IDynamoTable {
 
       PutItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).putItem(item)
 
-      LOG.info("update:" + result)
-      bRet = true
-    } catch (Exception e) {
-      LOG.error("update " + tableName() + ":" + e.getMessage())
+      LOG.info("update:$result")
+      return true
+    } catch (e) {
+      LOG.error("update ${tableName()}:$e.message")
     }
-    return bRet
+    return false
   }
 
-  public boolean delete() {
-    boolean bRet = false
-
+  boolean delete() {
     try {
-      DeleteItemOutcome result = null
+      DeleteItemOutcome result
 
-      if (nameRangeKey() != null && !"".equals(nameRangeKey())) {
+      if (nameRangeKey()) {
         result = AWSInstance.DYNAMO_TABLE(tableName()).deleteItem(nameHashKey(), valueHashKey(), nameRangeKey(), valueRangeKey())
       } else {
         result = AWSInstance.DYNAMO_TABLE(tableName()).deleteItem(nameHashKey(), valueHashKey())
       }
 
-      LOG.info("delete:" + result)
+      LOG.info("delete:$result")
 
-      bRet = true
-    } catch (Exception e) {
-      LOG.error("delete " + tableName() + ":" + e.getMessage())
+      return true
+    } catch (e) {
+      LOG.error("delete ${tableName()}:$e.message")
     }
 
-    return bRet
+    return false
   }
 
-  public List<ADynamoObject> scan() {
+  List<ADynamoObject> scan() {
     return scan(null, null)
   }
 
-  public List<ADynamoObject> scan(String WHERE, ValueMap valueMap) {
-    List<ADynamoObject> list = null
-
+  List<ADynamoObject> scan(String WHERE, ValueMap valueMap) {
     try {
       ItemCollection<?> col = AWSInstance.DYNAMO_TABLE(tableName()).scan(
         // filter expression
@@ -192,102 +151,78 @@ abstract public class ADynamoObject implements IDynamoTable {
         valueMap
       )
 
-      list = processRequestResults(col)
-    } catch (Exception e) {
-      LOG.error("scan " + tableName() + ":" + e.getMessage())
+      return processRequestResults(col)
+    } catch (e) {
+      LOG.error("scan ${tableName()}:$e.message")
     }
-
-    return list
   }
 
-  public List<ADynamoObject> queryIndex(String indexName, String hashKeyName, Object hashKeyValue) {
-    List<ADynamoObject> list = null
-
+  List<ADynamoObject> queryIndex(String indexName, String hashKeyName, Object hashKeyValue) {
     try {
       ItemCollection<QueryOutcome> col = AWSInstance.DYNAMO_INDEX(tableName(), indexName).query(
         hashKeyName, hashKeyValue)
       // can be notified of the low level result if needed
       col.registerLowLevelResultListener(new LowLevelResultListener<QueryOutcome>() {
-          @Override
-          public void onLowLevelResult(QueryOutcome outcome) {
+          void onLowLevelResult(QueryOutcome outcome) {
             LOG.info(outcome.toString())
           }
         })
-      list = processRequestResults(col)
-    } catch (Exception e) {
-      LOG.error("queryIndex " + tableName() + " " + hashKeyName + "=" + hashKeyValue + ":" + e.getMessage())
+      return processRequestResults(col)
+    } catch (e) {
+      LOG.error("queryIndex ${tableName()} $hashKeyName=hashKeyValue:$e.message")
     }
-
-    return list
   }
 
-  public List<ADynamoObject> queryIndex(String indexName, String hashKeyName, Object hashKeyValue, RangeKeyCondition rangeKeyCondition) {
-    List<ADynamoObject> list = null
-
+  List<ADynamoObject> queryIndex(String indexName, String hashKeyName, Object hashKeyValue, RangeKeyCondition rangeKeyCondition) {
     try {
       ItemCollection<QueryOutcome> col = AWSInstance.DYNAMO_INDEX(tableName(), indexName).query(
         hashKeyName, hashKeyValue,
         rangeKeyCondition)
       // can be notified of the low level result if needed
       col.registerLowLevelResultListener(new LowLevelResultListener<QueryOutcome>() {
-          @Override
-          public void onLowLevelResult(QueryOutcome outcome) {
+          void onLowLevelResult(QueryOutcome outcome) {
             LOG.info(outcome.toString())
           }
         })
-      list = processRequestResults(col)
-    } catch (Exception e) {
-      LOG.error("queryIndex " + tableName() + " " + hashKeyName + "=" + hashKeyValue + ":" + e.getMessage())
+      return processRequestResults(col)
+    } catch (e) {
+      LOG.error("queryIndex ${tableName()} ${hashKeyName}=$hashKeyValue:$e.message")
     }
-
-    return list
   }
 
-  public List<ADynamoObject> query(String hashKeyName, Object hashKeyValue) {
-    List<ADynamoObject> list = null
-
+  List<ADynamoObject> query(String hashKeyName, Object hashKeyValue) {
     try {
       ItemCollection<QueryOutcome> col = AWSInstance.DYNAMO_TABLE(tableName()).query(hashKeyName, hashKeyValue)
       // can be notified of the low level result if needed
       col.registerLowLevelResultListener(new LowLevelResultListener<QueryOutcome>() {
-          @Override
-          public void onLowLevelResult(QueryOutcome outcome) {
+          void onLowLevelResult(QueryOutcome outcome) {
             LOG.info(outcome.toString())
           }
         })
-      list = processRequestResults(col)
-    } catch (Exception e) {
-      LOG.error("query " + tableName() + " " + hashKeyName + "=" + hashKeyValue + ":" + e.getMessage())
+      return processRequestResults(col)
+    } catch (e) {
+      LOG.error("query ${tableName()} $hashKeyName=$hashKeyValue:$e.message")
     }
-
-    return list
   }
 
-  public List<ADynamoObject> query(String hashKeyName, Object hashKeyValue, RangeKeyCondition rangeKeyCondition) {
-    List<ADynamoObject> list = null
-
+  List<ADynamoObject> query(String hashKeyName, Object hashKeyValue, RangeKeyCondition rangeKeyCondition) {
     try {
       ItemCollection<QueryOutcome> col = AWSInstance.DYNAMO_TABLE(tableName()).query(
         hashKeyName, hashKeyValue,
         rangeKeyCondition)
       // can be notified of the low level result if needed
       col.registerLowLevelResultListener(new LowLevelResultListener<QueryOutcome>() {
-          @Override
-          public void onLowLevelResult(QueryOutcome outcome) {
+          void onLowLevelResult(QueryOutcome outcome) {
             LOG.info(outcome.toString())
           }
         })
-      list = processRequestResults(col)
-    } catch (Exception e) {
-      LOG.error("query " + tableName() + " " + hashKeyName + "=" + hashKeyValue + ":" + e.getMessage())
+      return processRequestResults(col)
+    } catch (e) {
+      LOG.error("query ${tableName()} $hashKeyName =$hashKeyValue:$e.message")
     }
-
-    return list
   }
 
-  public List<ADynamoObject> query(String hashKeyName, Object hashKeyValue, RangeKeyCondition rangeKeyCondition, String WHERE, ValueMap valueMap) {
-    List<ADynamoObject> list = null
-
+  List<ADynamoObject> query(String hashKeyName, Object hashKeyValue, RangeKeyCondition rangeKeyCondition, String WHERE, ValueMap valueMap) {
     try {
       ItemCollection<QueryOutcome> col = AWSInstance.DYNAMO_TABLE(tableName()).query(
         hashKeyName, hashKeyValue,
@@ -300,34 +235,23 @@ abstract public class ADynamoObject implements IDynamoTable {
         valueMap)
       // can be notified of the low level result if needed
       col.registerLowLevelResultListener(new LowLevelResultListener<QueryOutcome>() {
-          @Override
-          public void onLowLevelResult(QueryOutcome outcome) {
+          void onLowLevelResult(QueryOutcome outcome) {
             LOG.info(outcome.toString())
           }
         })
-      list = processRequestResults(col)
-    } catch (Exception e) {
-      LOG.error("query " + tableName() + " " + hashKeyName + "=" + hashKeyValue + ":" + e.getMessage())
+      return processRequestResults(col)
+    } catch (e) {
+      LOG.error("query ${tableName()} $hashKeyName=$hashKeyValue:$e.message")
     }
-
-    return list
   }
 
   private Expected setExpectedNotExist() {
-    Expected expected = null
-
-    if (nameRangeKey() != null && !"".equals(nameRangeKey())) {
-      expected = new Expected(nameRangeKey()).notExist()
-    } else {
-      expected = new Expected(nameHashKey()).notExist()
-    }
-
-    return expected
+    nameRangeKey() ? new Expected(nameRangeKey()).notExist() : new Expected(nameHashKey()).notExist()
   }
 
   private Item setKey(Item item) {
     item = item.with(nameHashKey(), valueHashKey())
-    if (nameRangeKey() != null && !"".equals(nameRangeKey())) {
+    if (nameRangeKey()) {
       item = item.with(nameRangeKey(), valueRangeKey())
     }
 
@@ -335,22 +259,19 @@ abstract public class ADynamoObject implements IDynamoTable {
   }
 
   private List<ADynamoObject> processRequestResults(ItemCollection<?> col) {
-    List<ADynamoObject> list = null
 
-    if (col != null) {
-      list = new ArrayList<>()
-
-      for (Item item : col) {
-        try {
-          ADynamoObject obj = newInstance(item)
-          list.add(obj)
-        } catch (Exception e) {
-          LOG.error("processRequestResults", e)
-        }
-      }
+    if (col == null) {
+      return null
     }
 
+    List<ADynamoObject> list = []
+    col.each { Item item ->
+      try {
+        list << newInstance(item)
+      } catch (e) {
+        LOG.error("processRequestResults", e)
+      }
+    }
     return list
   }
-
 }

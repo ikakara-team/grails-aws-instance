@@ -19,28 +19,23 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 /**
- *
  * @author Allen
  */
-@Slf4j("LOG")
 @CompileStatic
-public class NumberUtil {
+@Slf4j("LOG")
+class NumberUtil {
 
-  static public int getRandomInt(int min, int max) {
-    SecureRandom rand = new SecureRandom()
-    int random_int = rand.nextInt(max - min + 1) + min
-    return random_int
+  static int getRandomInt(int min, int max) {
+    return new SecureRandom().nextInt(max - min + 1) + min
   }
 
-  static public void shuffleArray(int[] array) {
-    int index, temp
+  static void shuffleArray(int[] array) {
     SecureRandom random = new SecureRandom()
     for (int i = array.length - 1; i > 0; i--) {
-      index = random.nextInt(i + 1)
-      temp = array[index]
+      int index = random.nextInt(i + 1)
+      int temp = array[index]
       array[index] = array[i]
       array[i] = temp
     }
   }
-
 }

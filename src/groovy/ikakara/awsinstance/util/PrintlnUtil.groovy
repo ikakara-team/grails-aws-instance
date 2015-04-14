@@ -27,6 +27,11 @@ import com.amazonaws.AmazonServiceException
 @CompileStatic
 class PrintlnUtil {
 
+  private static final String CLIENT_EXCEPTION_MESSAGE =
+    "\nCaught an AmazonClientException, which means the client encountered " +
+    "a serious internal problem while trying to communicate with Amazon, " +
+    "such as not being able to access the network.\nError Message: "
+
   static AmazonServiceException(String header, AmazonServiceException ase) {
     StringBuilder sb = new StringBuilder(header)
     sb << "\nCaught an AmazonServiceException, which means your request made it " +
@@ -36,15 +41,10 @@ class PrintlnUtil {
     sb << "AWS Error Code:   " << ase.errorCode << '\n'
     sb << "Error Type:       " << ase.errorType << '\n'
     sb << "Request ID:       " << ase.requestId
-    println sb
+    LOG.error sb.toString()
   }
 
   static AmazonClientException(String header, AmazonClientException ace) {
-    StringBuilder sb = new StringBuilder(header)
-    sb << "\nCaught an AmazonClientException, which means the client encountered " +
-          "a serious internal problem while trying to communicate with Amazon, " +
-          "such as not being able to access the network.\n"
-    sb << "Error Message: " << ace.message
-    println sb
+    LOG.error "$header$CLIENT_EXCEPTION_MESSAGE$ace.message"
   }
 }

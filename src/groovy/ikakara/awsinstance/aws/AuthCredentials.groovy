@@ -14,27 +14,27 @@
  */
 package ikakara.awsinstance.aws
 
+import groovy.transform.CompileStatic
+
 import com.amazonaws.auth.AWSCredentials
 
 /**
  * @author Allen
  */
-@Singleton
+@CompileStatic
 class AuthCredentials implements AWSCredentials {
 
-  private String accessKey
-  private String secretKey
+  static AuthCredentials instance
 
-  void init(String accessKey, String secretKey) {
-    this.accessKey = accessKey
-    this.secretKey = secretKey
+  final String AWSAccessKeyId
+  final String AWSSecretKey
+
+  private AuthCredentials(String accessKey, String secretKey) {
+    AWSAccessKeyId = accessKey
+    AWSSecretKey = secretKey
   }
 
-  String getAWSAccessKeyId() {
-    return accessKey
-  }
-
-  String getAWSSecretKey() {
-    return secretKey
+  static void init(String accessKey, String secretKey) {
+    instance = new AuthCredentials(accessKey, secretKey)
   }
 }

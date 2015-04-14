@@ -14,10 +14,6 @@
  */
 package ikakara.awsinstance.util
 
-import java.io.UnsupportedEncodingException
-import java.io.IOException
-import java.net.URLDecoder
-import java.net.URLEncoder
 import java.security.SecureRandom
 
 import groovy.transform.CompileStatic
@@ -26,41 +22,35 @@ import groovy.util.logging.Slf4j
 import com.github.slugify.Slugify
 
 /**
- *
  * @author Allen
  */
-@Slf4j("LOG")
 @CompileStatic
-public class StringUtil {
+@Slf4j("LOG")
+class StringUtil {
   static final String RANDOM_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
   static final int RANDOM_CHARS_LENGTH = RANDOM_CHARS.length()
 
-  public static String slugify(String str) throws IOException {
-    Slugify slg = new Slugify()
-    String s = slg.slugify(str)
-    return s
+  static String slugify(String str) throws IOException {
+    return new Slugify().slugify(str)
   }
 
-  public static String getRandomNumbers(int numChar) {
+  static String getRandomNumbers(int numChar) {
     return getRandomChars(numChar, 10)
   }
 
-  public static String getRandomChars(int numChar) {
+  static String getRandomChars(int numChar) {
     return getRandomChars(numChar, RANDOM_CHARS_LENGTH)
   }
 
-  public static String getRandomCharsLength(int min, int max) {
-    int num = NumberUtil.getRandomInt(min, max)
-    return getRandomChars(num, RANDOM_CHARS_LENGTH)
+  static String getRandomCharsLength(int min, int max) {
+    return getRandomChars(NumberUtil.getRandomInt(min, max), RANDOM_CHARS_LENGTH)
   }
 
-  public static String getRandomChars(int numChar, int range) {
+  static String getRandomChars(int numChar, int range) {
     // assert range <= RANDOM_CHARS_LENGTH
     SecureRandom rand = new SecureRandom()
     StringBuilder sbStr = new StringBuilder()
-    for (int i = 0; i < numChar; i++) {
-      sbStr.append(RANDOM_CHARS.charAt(rand.nextInt(range)))
-    }
+    numChar.times { sbStr << RANDOM_CHARS.charAt(rand.nextInt(range)) }
     return sbStr.toString()
   }
 
@@ -74,13 +64,12 @@ public class StringUtil {
    * returned.
    * @return An array of two strings split from source by splitter.
    */
-  static public String[] splitFirst(String source, String splitter) {
-    String[] ret_array = null
+  static String[] splitFirst(String source, String splitter) {
+    String[] ret_array
     int last = 0
-    int next = 0
 
     // find first splitter in source
-    next = source.indexOf(splitter, last)
+    int next = source.indexOf(splitter, last)
     if (next != -1) {
       ret_array = new String[2]
       // isolate from last thru before next
@@ -100,38 +89,30 @@ public class StringUtil {
   }
 
   // This is a hack to encode periods
-  static public String urlEncodeExt(String str) {
-    String encoded_str = ""
+  static String urlEncodeExt(String str) {
     try {
-      encoded_str = str.replaceAll("\\.", "%2E") // replace period
-      encoded_str = URLEncoder.encode(encoded_str, "UTF8")
+      return URLEncoder.encode(str.replaceAll("\\.", "%2E") /*replace period*/, "UTF8")
     } catch (UnsupportedEncodingException e) {
-      StringBuilder msg = new StringBuilder("urlEncode:").append(str)
-      LOG.error(msg.toString(), e)
+      LOG.error("urlEncode:$str", e)
+      return ''
     }
-    return encoded_str
   }
 
-  static public String urlEncode(String str) {
-    String encoded_str = ""
+  static String urlEncode(String str) {
     try {
-      encoded_str = URLEncoder.encode(str, "UTF8")
+      return URLEncoder.encode(str, "UTF8")
     } catch (UnsupportedEncodingException e) {
-      StringBuilder msg = new StringBuilder("urlEncode:").append(str)
-      LOG.error(msg.toString(), e)
+      LOG.error("urlEncode:$str", e)
+      return ''
     }
-    return encoded_str
   }
 
-  static public String urlDecode(String str) {
-    String decoded_str = ""
+  static String urlDecode(String str) {
     try {
-      decoded_str = URLDecoder.decode(str, "UTF8")
+      return URLDecoder.decode(str, "UTF8")
     } catch (UnsupportedEncodingException e) {
-      StringBuilder msg = new StringBuilder("urlDecode:").append(str)
-      LOG.error(msg.toString(), e)
+      LOG.error("urlDecode:$str", e)
     }
-    return decoded_str
+    return ''
   }
-
 }
