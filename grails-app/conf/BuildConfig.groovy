@@ -13,9 +13,7 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile('com.amazonaws:aws-java-sdk:1.9.30') { // http://aws.amazon.com/releasenotes/Java?browse=1
-      export = false
-    }
+    compile 'com.amazonaws:aws-java-sdk:1.9.30' // http://aws.amazon.com/releasenotes/Java?browse=1
 
     // http://mvnrepository.com/artifact/com.fasterxml.jackson.core
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
