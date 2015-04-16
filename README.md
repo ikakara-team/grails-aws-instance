@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.5.2'
+    compile ':aws-instance:0.5.3'
 ...
   }
 ```
@@ -180,6 +180,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.5.3 - merged Burt's cleanup
 0.5.2 - fix logging
 0.5.1 - tweak returns for awsIdentityService
 0.5   - awsIdentityService - cognito, iam
