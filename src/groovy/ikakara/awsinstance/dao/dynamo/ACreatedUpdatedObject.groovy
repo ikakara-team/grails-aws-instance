@@ -94,6 +94,10 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
     return this
   }
 
+  ACreatedUpdatedObject withCreated() {
+    return withCreated(new Date())
+  }
+
   ACreatedUpdatedObject withUpdated(Date date) {
     updatedDate = date
     return this
