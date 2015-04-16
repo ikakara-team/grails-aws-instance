@@ -14,6 +14,9 @@
  */
 package ikakara.awsinstance.aws
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class IAMCredential {
   String user
   String arn

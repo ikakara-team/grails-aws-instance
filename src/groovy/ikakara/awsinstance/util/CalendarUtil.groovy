@@ -16,31 +16,27 @@ package ikakara.awsinstance.util
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.GregorianCalendar
-import java.util.Calendar
-import java.util.Date
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 /**
- *
  * @author Allen
  */
-@Slf4j("LOG")
 @CompileStatic
-public class CalendarUtil {
-  static public final int MILLIS_PER_SECOND = 1000
-  static public final int SECONDS_PER_MINUTE = 60
-  static public final int MINUTES_PER_HOUR = 60
-  static public final int HOURS_PER_DAY = 24
+@Slf4j("LOG")
+class CalendarUtil {
+  public static final int MILLIS_PER_SECOND = 1000
+  public static final int SECONDS_PER_MINUTE = 60
+  public static final int MINUTES_PER_HOUR = 60
+  public static final int HOURS_PER_DAY = 24
 
-  static public final String CONCISE_DATETIME_FORMAT = "yyyyMMddHHmmss"
-  static public final String CONCISE_DATETIME_FORMAT_MS = "yyyyMMddHHmmssSSS"
-  static public final String ISO8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-  static public final String DATE_DATETIME_FORMAT = "yyyy-MM-dd"
+  public static final String CONCISE_DATETIME_FORMAT = "yyyyMMddHHmmss"
+  public static final String CONCISE_DATETIME_FORMAT_MS = "yyyyMMddHHmmssSSS"
+  public static final String ISO8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+  public static final String DATE_DATETIME_FORMAT = "yyyy-MM-dd"
 
-  static public enum ROUND_TYPE {
+  static enum ROUND_TYPE {
 
     SECOND(MILLIS_PER_SECOND), // 1000 ms
     MINUTE(MILLIS_PER_SECOND * SECONDS_PER_MINUTE), // 60 seconds
@@ -50,86 +46,73 @@ public class CalendarUtil {
     private final long millis // milliseconds
 
     ROUND_TYPE(long ms) {
-      this.millis = ms
+      millis = ms
     }
 
-    public long millis() {
+    long millis() {
       return millis
     }
   }
 
-  static public String getStringFromDate_CONCISE(Date date) {
+  static String getStringFromDate_CONCISE(Date date) {
     return getStringFromDate(date, CONCISE_DATETIME_FORMAT)
   }
 
-  static public String getStringFromDate_CONCISE_MS(Date date) {
+  static String getStringFromDate_CONCISE_MS(Date date) {
     return getStringFromDate(date, CONCISE_DATETIME_FORMAT_MS)
   }
 
-  static public String getStringFromDate_ISO8601(Date date) {
+  static String getStringFromDate_ISO8601(Date date) {
     return getStringFromDate(date, ISO8601_DATETIME_FORMAT)
   }
 
-  static public String getStringFromDate(Date date, String format) {
-    String date_str = null
-
-    if (date == null) {
-      date = new Date()
-    }
-
+  static String getStringFromDate(Date date, String format) {
     try {
-      SimpleDateFormat sdf = new SimpleDateFormat(format)
-      date_str = sdf.format(date)
-    } catch (Exception ex) {
-      String msg = "getStringFromDate:" + format
-      LOG.error(msg, ex)
+      return new SimpleDateFormat(format).format(date ?: new Date())
+    } catch (e) {
+      LOG.error("getStringFromDate:$format", e)
     }
-    return date_str
   }
 
-  static public java.util.Date getDateFromString_CONCISE(String datestr) {
+  static Date getDateFromString_CONCISE(String datestr) {
     return getDateFromString(datestr, CONCISE_DATETIME_FORMAT)
   }
 
-  static public java.util.Date getDateFromString_CONCISE_MS(String datestr) {
+  static Date getDateFromString_CONCISE_MS(String datestr) {
     return getDateFromString(datestr, CONCISE_DATETIME_FORMAT_MS)
   }
 
-  static public java.util.Date getDateFromString_DATE(String datestr) {
+  static Date getDateFromString_DATE(String datestr) {
     return getDateFromString(datestr, DATE_DATETIME_FORMAT)
   }
 
-  static public java.util.Date getDateFromString(String datestr, String format) {
-    Date retdate = null
-    SimpleDateFormat sdf = new SimpleDateFormat(format)
+  static Date getDateFromString(String datestr, String format) {
     try {
-      retdate = sdf.parse(datestr)
+      return new SimpleDateFormat(format).parse(datestr)
     } catch (ParseException ex) {
-      String msg = "getDatefromString:" + datestr + "," + format
-      LOG.error(msg, ex)
+      LOG.error("getDatefromString:$datestr,$format", ex)
     }
-    return retdate
   }
 
-  static public Date round(Date in_date, ROUND_TYPE type, int amt) {
-    Calendar calendar = Calendar.getInstance()
-    if (in_date != null) {
-      calendar.setTime(in_date)
+  static Date round(Date inDate, ROUND_TYPE type, int amt) {
+    Calendar calendar = Calendar.instance
+    if (inDate) {
+      calendar.time = inDate
     }
 
     // determine rounding
     long mod = type.millis() //ms
     mod = mod * amt
 
-    long unroundedMillis = calendar.getTimeInMillis()
+    long unroundedMillis = calendar.timeInMillis
     long millisToRound = unroundedMillis % mod
     long roundedMillis = unroundedMillis - millisToRound
-    calendar.setTimeInMillis(roundedMillis)
+    calendar.timeInMillis = roundedMillis
 
-    return calendar.getTime()
+    return calendar.time
   }
 
-  public static int date_diff_minutes(Date d1, Date d2) {
+  static int date_diff_minutes(Date d1, Date d2) {
     return (int) (getDateDiff(d1, d2, Calendar.MINUTE))
   }
 
@@ -139,16 +122,16 @@ public class CalendarUtil {
   //  This method returns the number of days, weeks, months, etc.
   //  between the two dates.  In other words it returns the result of
   //  subtracting two dates as the number of days, weeks, months, etc.
-  public static long getDateDiff(Date d1, Date d2, int calUnit) {
+  static long getDateDiff(Date d1, Date d2, int calUnit) {
     if (d1.after(d2)) {    // make sure d1 < d2, else swap them
       Date temp = d1
       d1 = d2
       d2 = temp
     }
     GregorianCalendar c1 = new GregorianCalendar()
-    c1.setTime(d1)
+    c1.time = d1
     GregorianCalendar c2 = new GregorianCalendar()
-    c2.setTime(d2)
+    c2.time = d2
     for (long i = 1;; i++) {
       c1.add(calUnit, 1)   // add one day, week, year, etc.
       if (c1.after(c2)) {
@@ -156,5 +139,4 @@ public class CalendarUtil {
       }
     }
   }
-
 }

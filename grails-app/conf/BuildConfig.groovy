@@ -1,23 +1,19 @@
 grails.project.work.dir = 'target'
-grails.project.target.level = 1.7
-grails.project.source.level = 1.7
 
-grails.project.dependency.resolver = "maven"
+grails.project.dependency.resolver = 'maven'
 grails.project.dependency.resolution = {
 
-  inherits("global")
-  log "warn"
+  inherits 'global'
+  log 'warn'
 
   repositories {
-    grailsCentral()
     mavenLocal()
+    grailsCentral()
     mavenCentral()
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.9.30') { // http://aws.amazon.com/releasenotes/Java?browse=1
-      export = false
-    }
+    compile 'com.amazonaws:aws-java-sdk:1.9.30' // http://aws.amazon.com/releasenotes/Java?browse=1
 
     // http://mvnrepository.com/artifact/com.fasterxml.jackson.core
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.2'
@@ -38,8 +34,7 @@ grails.project.dependency.resolution = {
     // needed for config management
     compile ':plugin-config:0.2.0'
 
-    build(":release:3.1.1",
-          ":rest-client-builder:2.1.1") {
+    build(':release:3.1.1', ':rest-client-builder:2.1.1') {
       export = false
     }
   }

@@ -26,6 +26,7 @@ public interface IDynamoTable {
 
   String tableName();
 
+  @SuppressWarnings("rawtypes")
   Map initTable();
 
   Object valueHashKey(); // future: return can be number or binary
@@ -41,5 +42,4 @@ public interface IDynamoTable {
   Item marshalItemOUT(boolean bRemoveAttributeNull);
 
   ADynamoObject newInstance(Item item);
-
 }

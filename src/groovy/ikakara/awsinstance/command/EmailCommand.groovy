@@ -16,18 +16,19 @@ package ikakara.awsinstance.command
 
 import org.codehaus.groovy.grails.web.util.StreamCharBuffer
 
-import groovy.transform.ToString
-import groovy.text.GStringTemplateEngine
-
 import grails.validation.Validateable
+import groovy.text.GStringTemplateEngine
+import groovy.transform.CompileStatic
+import groovy.transform.ToString
 
 /**
  * @author Allen
  */
+@CompileStatic
 @ToString(includePackage=false, ignoreNulls=true)
 @Validateable(nullable=true)
 class EmailCommand {
-  static public final EMAIL_REGX = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/
+  static final EMAIL_REGX = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/
 
   List<String> to = []
   String subject = ''
@@ -41,14 +42,14 @@ class EmailCommand {
   //to
   EmailCommand withTo(String str) {
     if(str =~ EMAIL_REGX) {
-      to.add(str)
+      to << str
     }
     return this
   }
 
   EmailCommand withTo(List<String> list) {
     to = []
-    list.each { str ->
+    list.each { String str ->
       withTo(str)
     }
     return this
