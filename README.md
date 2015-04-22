@@ -19,13 +19,13 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.30' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.31' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
   plugins {
 ...
-    compile ':aws-instance:0.5.3'
+    compile ':aws-instance:0.5.4'
 ...
   }
 ```
@@ -180,6 +180,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.5.4 - createGlobalSecondaryIndex
 0.5.3 - merged Burt's cleanup
 0.5.2 - fix logging
 0.5.1 - tweak returns for awsIdentityService

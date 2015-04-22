@@ -17,16 +17,28 @@ package ikakara.awsinstance.aws
 import grails.util.Holders
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import ikakara.awsinstance.dao.dynamo.ADynamoObject
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
+import com.amazonaws.services.dynamodbv2.document.Index
 import com.amazonaws.services.dynamodbv2.document.Table
 import com.amazonaws.services.dynamodbv2.document.TableCollection
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition
+import com.amazonaws.services.dynamodbv2.model.CreateGlobalSecondaryIndexAction
 import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest
+import com.amazonaws.services.dynamodbv2.model.GlobalSecondaryIndexDescription
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement
+import com.amazonaws.services.dynamodbv2.model.KeyType
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult
+import com.amazonaws.services.dynamodbv2.model.Projection
+import com.amazonaws.services.dynamodbv2.model.ProjectionType
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException
+import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType
 import com.amazonaws.services.dynamodbv2.model.TableDescription
+
 import com.amazonaws.services.dynamodbv2.util.Tables
+
+import ikakara.awsinstance.dao.dynamo.ADynamoObject
 
 /**
  * @author Allen
@@ -105,14 +117,78 @@ class DynamoHelper {
         new DescribeTableRequest().withTableName(tableName)).getTable()
       return tableDescriptionToMap(tableDescription)
     } catch (ResourceNotFoundException ignored) {
+      LOG.debug(ignored.message, ignored)
     }
+  }
+
+  static Map createTableGlobalSecondaryIndex(
+    Table table,
+    String indexName,
+    String idxHashName, ScalarAttributeType hashType,
+    String idxRangeName, ScalarAttributeType rangeType) {
+
+    TableDescription desc = table.describe()
+
+    if(!haveGlobalSecondaryIndex(desc, indexName)) {
+      ProvisionedThroughput THRUPUT = new ProvisionedThroughput(1L, 1L)
+      Projection PROJECTION = new Projection().withProjectionType(ProjectionType.ALL)
+
+      CreateGlobalSecondaryIndexAction req = new CreateGlobalSecondaryIndexAction()
+      .withIndexName(indexName)
+      .withProjection(PROJECTION)
+      .withProvisionedThroughput(THRUPUT)
+
+      Index index
+      if(idxRangeName) {
+        req.withKeySchema(new KeySchemaElement(idxHashName, KeyType.HASH),
+          new KeySchemaElement(idxRangeName, KeyType.RANGE))
+        index = table.createGSI(
+          req,
+          new AttributeDefinition(idxHashName, hashType),
+          new AttributeDefinition(idxRangeName, rangeType))
+      } else {
+        req.withKeySchema(new KeySchemaElement(idxHashName, KeyType.HASH))
+        index = table.createGSI(
+          req,
+          new AttributeDefinition(idxHashName, hashType))
+      }
+
+      try {
+        // Wait for the table to become active
+        desc = index.waitForActive()
+      } catch (InterruptedException ie) {
+        LOG.error(ie.message, ie)
+        desc = table.describe()
+      }
+    }
+
+    return DynamoHelper.tableDescriptionToMap(desc)
+  }
+
+  static boolean haveGlobalSecondaryIndex(TableDescription desc, String indexName) {
+    final List<GlobalSecondaryIndexDescription> list = desc.getGlobalSecondaryIndexes();
+    if (list != null) {
+      for (GlobalSecondaryIndexDescription d: list) {
+        if (d.getIndexName().equals(indexName)) {
+          return true
+        }
+      }
+    }
+
+    return false
   }
 
   static Map tableDescriptionToMap(TableDescription tableDescription) {
     if (tableDescription) {
-      return [name: tableDescription.tableName, status: tableDescription.tableStatus,
-              read_capacity: tableDescription.provisionedThroughput.readCapacityUnits,
-              write_capacity: tableDescription.provisionedThroughput.writeCapacityUnits]
+      return [
+        name: tableDescription.tableName,
+        status: tableDescription.tableStatus,
+        created: tableDescription.creationDateTime,
+        size_bytes: tableDescription.tableSizeBytes,
+        item_count: tableDescription.itemCount,
+        read_capacity: tableDescription.provisionedThroughput.readCapacityUnits,
+        write_capacity: tableDescription.provisionedThroughput.writeCapacityUnits,
+      ]
     }
   }
 }
