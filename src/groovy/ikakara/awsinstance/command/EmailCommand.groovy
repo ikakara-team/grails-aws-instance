@@ -25,7 +25,7 @@ import groovy.transform.ToString
  * @author Allen
  */
 @CompileStatic
-@ToString(includePackage=false, ignoreNulls=true)
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true)
 @Validateable(nullable=true)
 class EmailCommand {
   static final EMAIL_REGX = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/

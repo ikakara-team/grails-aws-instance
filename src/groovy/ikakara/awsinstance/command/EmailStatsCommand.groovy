@@ -22,7 +22,7 @@ import groovy.transform.ToString
  * @author Allen
  */
 @CompileStatic
-@ToString(includePackage=false, ignoreNulls=true)
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true)
 @Validateable(nullable=true)
 class EmailStatsCommand {
 

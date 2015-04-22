@@ -30,7 +30,7 @@ import ikakara.awsinstance.util.CalendarUtil
  */
 @CompileStatic
 @Slf4j("LOG")
-@ToString(includePackage=false, ignoreNulls=true)
+@ToString(includePackage=false, includeNames=true, ignoreNulls=true)
 abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandObject {
 
   @DynamoDBAttribute(attributeName = "CreatedTime")
