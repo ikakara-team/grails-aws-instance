@@ -87,6 +87,46 @@ class AwsStorageService implements InitializingBean {
     return deleteObject(PUBLIC_BUCKET, rootfolder, path)
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+
+  def listBuckets() {
+    AWSInstance.S3_CLIENT().listBuckets();
+  }
+
+  Boolean createBucket(String bucketName) {
+    try {
+      if(!(AWSInstance.S3_CLIENT().doesBucketExist(bucketName))) {
+        // Note that CreateBucketRequest does not specify region. So bucket is
+        // created in the region specified in the client.
+        AWSInstance.S3_CLIENT().createBucket(bucketName);
+        return true
+      }
+      return null
+    } catch (AmazonServiceException ase) {
+      PrintlnUtil.AmazonServiceException("createBucket ${bucketName}", ase)
+    } catch (AmazonClientException ace) {
+      PrintlnUtil.AmazonClientException("createBucket ${bucketName}", ace)
+    }
+
+    return false
+  }
+
+  Boolean deleteEmptyBucket(String bucketName) {
+    try {
+      if(AWSInstance.S3_CLIENT().doesBucketExist(bucketName)) {
+        AWSInstance.S3_CLIENT().deleteBucket(bucketName);
+        return true
+      }
+      return null // doesn't exist
+    } catch (AmazonServiceException ase) {
+      PrintlnUtil.AmazonServiceException("createBucket ${bucketName}", ase)
+    } catch (AmazonClientException ace) {
+      PrintlnUtil.AmazonClientException("createBucket ${bucketName}", ace)
+    }
+
+    return false
+  }
+
   def deleteObject(String lobBucketName, String rootfolder, String path) {
     def _key = "${rootfolder}/${path}"
 
@@ -148,7 +188,6 @@ class AwsStorageService implements InitializingBean {
   }
 
   ObjectListing getObjectList(String lobBucketName, String rootfolder, String path) {
-
     def _key = "${rootfolder}/${path}"
 
     try {
@@ -178,3 +217,4 @@ class AwsStorageService implements InitializingBean {
     return sb
   }
 }
+
