@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.5.6'
+    compile ':aws-instance:0.5.7'
 ...
   }
 ```
@@ -180,6 +180,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.5.7 - fix (created/updated) regression
 0.5.6 - bump version (should be the last)
 0.5.5 - createBucket; deleteEmptyBucket
 0.5.4 - createGlobalSecondaryIndex

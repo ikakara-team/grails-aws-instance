@@ -45,8 +45,8 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
 
   void initParameters(Map params) {
     //if (params) {
-    createdTime = (String) params.created_time
-    updatedTime = (String) params.updated_time
+    createdTime = (String) params.createdTime
+    updatedTime = (String) params.updatedTime
     //}
   }
 
@@ -90,7 +90,7 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
   }
 
   ACreatedUpdatedObject withCreated(Date date) {
-    createdDate = date
+    setCreatedDate(date)
     return this
   }
 
@@ -99,7 +99,7 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
   }
 
   ACreatedUpdatedObject withUpdated(Date date) {
-    updatedDate = date
+    setUpdatedDate(date)
     return this
   }
 
@@ -113,7 +113,7 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
       if (createdTime) {
         createdDate = CalendarUtil.getDateFromString_CONCISE_MS(createdTime)
       } else {
-        createdDate = new Date()
+        setCreatedDate(new Date())
       }
     }
     return createdDate
@@ -130,10 +130,10 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
       if (updatedTime) {
         updatedDate = CalendarUtil.getDateFromString_CONCISE_MS(updatedTime)
       } else {
-        updatedDate = new Date()
+        setUpdatedDate(new Date())
       }
     }
-    return createdDate
+    return updatedDate
   }
 
   void setUpdatedDate(Date d) {
