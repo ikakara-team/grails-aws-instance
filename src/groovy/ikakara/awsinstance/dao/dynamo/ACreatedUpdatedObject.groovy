@@ -120,7 +120,8 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
       if (createdTime) {
         createdDate = CalendarUtil.getDateFromString_CONCISE_MS(createdTime)
       } else {
-        setCreatedDate(new Date())
+        // preserve value of writeOverCreated
+        setDateCreated(new Date())
       }
     }
     return createdDate
@@ -128,6 +129,10 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
 
   void setCreatedDate(Date d) {
     writeOverCreated = true
+    setDateCreated(d)
+  }
+
+  protected void setDateCreated(Date d) {
     createdDate = d
     createdTime = CalendarUtil.getStringFromDate_CONCISE_MS(d)
   }
