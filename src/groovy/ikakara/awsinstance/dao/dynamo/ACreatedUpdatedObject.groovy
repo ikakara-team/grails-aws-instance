@@ -42,6 +42,7 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
   // transient
   protected Date createdDate
   protected Date updatedDate
+  protected boolean writeOverCreated = false
 
   void initParameters(Map params) {
     //if (params) {
@@ -69,11 +70,12 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
 
   Item marshalItemOUT(boolean removeAttributeNull) {
     Item outItem = new Item()
-
-    if (createdTime) {
-      outItem = outItem.withString("CreatedTime", createdTime)
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("CreatedTime")
+    if(writeOverCreated) {
+      if (createdTime) {
+        outItem = outItem.withString("CreatedTime", createdTime)
+      } else if (removeAttributeNull) {
+        outItem = outItem.removeAttribute("CreatedTime")
+      }
     }
     if (updatedTime) {
       outItem = outItem.withString("UpdatedTime", updatedTime)
@@ -107,6 +109,11 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
     return withUpdated(new Date())
   }
 
+  ACreatedUpdatedObject withWriteOverCreated(boolean b) {
+    writeOverCreated = b
+    return this
+  }
+
   @DynamoDBIgnore
   Date getCreatedDate() {
     if (!createdDate) {
@@ -120,6 +127,7 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
   }
 
   void setCreatedDate(Date d) {
+    writeOverCreated = true
     createdDate = d
     createdTime = CalendarUtil.getStringFromDate_CONCISE_MS(d)
   }

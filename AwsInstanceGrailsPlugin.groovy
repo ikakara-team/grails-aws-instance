@@ -1,7 +1,7 @@
 import ikakara.awsinstance.aws.AuthCredentials
 
 class AwsInstanceGrailsPlugin {
-  def version = "0.5.7"
+  def version = "0.5.8"
   def grailsVersion = "2.2 > *"
   def pluginExcludes = [
     "grails-app/i18n/*",          // needed to test plugin
