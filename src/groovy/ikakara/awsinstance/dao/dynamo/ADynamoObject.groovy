@@ -23,10 +23,14 @@ import com.amazonaws.services.dynamodbv2.document.Item
 import com.amazonaws.services.dynamodbv2.document.ItemCollection
 import com.amazonaws.services.dynamodbv2.document.LowLevelResultListener
 import com.amazonaws.services.dynamodbv2.document.PutItemOutcome
+import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome
 import com.amazonaws.services.dynamodbv2.document.RangeKeyCondition
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException
+
 
 import ikakara.awsinstance.aws.AWSInstance
 
@@ -38,8 +42,8 @@ import ikakara.awsinstance.aws.AWSInstance
 abstract class ADynamoObject implements IDynamoTable {
 
   // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/LowLevelJavaItemCRUD.html
+  // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/JavaDocumentAPICRUDExample.html
   boolean load() {
-
     if (valueHashKey()) {
       try {
         Item item
@@ -66,13 +70,13 @@ abstract class ADynamoObject implements IDynamoTable {
   boolean create() {
     try {
       // Save the item
-      Item item = marshalItemOUT(true)
+      Item item = marshalItemOUT(null)
       setKey(item)
-      LOG.info("create item:$item")
 
       Expected expected = setExpectedNotExist()
       PutItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).putItem(item, expected)
 
+      LOG.info("create: $item $result")
       return true
     } catch (ConditionalCheckFailedException ccfe) {
       LOG.error("create ${tableName()}:$ccfe.message")
@@ -82,16 +86,32 @@ abstract class ADynamoObject implements IDynamoTable {
     return false
   }
 
-  // Save all attributes; will remove attributes w/ null
-  boolean save() {
+  // create new or replace (existing item) w/ this one
+  boolean replace() {
     try {
       // Save the item
-      Item item = marshalItemOUT(true)
+      Item item = marshalItemOUT(null)
       setKey(item)
 
       PutItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).putItem(item)
 
-      LOG.info("save:$result")
+      LOG.info("replace: $item $result")
+      return true
+    } catch (e) {
+      LOG.error("replace ${tableName()}:$e.message")
+    }
+    return false
+  }
+
+  // Save all attributes; will remove attributes w/ null
+  boolean save() {
+    try {
+      UpdateItemSpec spec = marshallUpdateItemSpecOUT([])
+      setKey(spec)
+
+      UpdateItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).updateItem(spec)
+
+      LOG.info("save: $spec.updateExpression $spec.nameMap $spec.valueMap $result")
       return true
     } catch (e) {
       LOG.error("save ${tableName()}:$e.message")
@@ -102,13 +122,12 @@ abstract class ADynamoObject implements IDynamoTable {
   // only save attributes that are non-null
   boolean update() {
     try {
-      // Save the item
-      Item item = marshalItemOUT(false)
-      setKey(item)
+      UpdateItemSpec spec = marshallUpdateItemSpecOUT(null)
+      setKey(spec)
 
-      PutItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).putItem(item)
+      UpdateItemOutcome result = AWSInstance.DYNAMO_TABLE(tableName()).updateItem(spec)
 
-      LOG.info("update:$result")
+      LOG.info("save: $spec.updateExpression $spec.nameMap $spec.valueMap $result")
       return true
     } catch (e) {
       LOG.error("update ${tableName()}:$e.message")
@@ -258,8 +277,17 @@ abstract class ADynamoObject implements IDynamoTable {
     return item
   }
 
-  private List<ADynamoObject> processRequestResults(ItemCollection<?> col) {
+  private UpdateItemSpec setKey(UpdateItemSpec spec) {
+    if (nameRangeKey()) {
+      spec = spec.withPrimaryKey(nameHashKey(), valueHashKey(), nameRangeKey(), valueRangeKey())
+    } else {
+      spec = spec.withPrimaryKey(nameHashKey(), valueHashKey())
+    }
 
+    return spec
+  }
+
+  private List<ADynamoObject> processRequestResults(ItemCollection<?> col) {
     if (col == null) {
       return null
     }
@@ -274,4 +302,35 @@ abstract class ADynamoObject implements IDynamoTable {
     }
     return list
   }
+
+  private UpdateItemSpec marshallUpdateItemSpecOUT(List removeAttributes) {
+    // marshalItemOUT
+    Item item = marshalItemOUT(removeAttributes)
+
+    // get the names, values for the update expression
+    def i = 0
+    def keys = new NameMap()
+    def vals = new ValueMap()
+    item.asMap().each { k,v ->
+      keys.with("#k${++i}", k)
+      vals.with(":v${i}", v)
+    }
+
+    i = 0
+    // get the set expression
+    def exp = 'SET ' + item.asMap().collect { k,v -> "#k${++i}=:v${i}" }.join(',')
+
+    // append the removeAttributes
+    if(removeAttributes) {
+      exp += ' REMOVE ' + removeAttributes.join(',')
+    }
+
+    def spec = new UpdateItemSpec()
+    .withUpdateExpression(exp)
+    .withNameMap(keys)
+    .withValueMap(vals)
+
+    return spec
+  }
+
 }

@@ -68,19 +68,19 @@ abstract class ACreatedUpdatedObject extends ADynamoObject implements ICommandOb
     //}
   }
 
-  Item marshalItemOUT(boolean removeAttributeNull) {
+  Item marshalItemOUT(List removeAttributeNull) {
     Item outItem = new Item()
     if(writeOverCreated) {
       if (createdTime) {
         outItem = outItem.withString("CreatedTime", createdTime)
-      } else if (removeAttributeNull) {
-        outItem = outItem.removeAttribute("CreatedTime")
+      } else if (removeAttributeNull != null) {
+        removeAttributeNull.add("CreatedTime")
       }
     }
     if (updatedTime) {
       outItem = outItem.withString("UpdatedTime", updatedTime)
-    } else if (removeAttributeNull) {
-      outItem = outItem.removeAttribute("UpdatedTime")
+    } else if (removeAttributeNull != null) {
+      removeAttributeNull.add("UpdatedTime")
     }
 
     return outItem

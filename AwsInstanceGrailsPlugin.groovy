@@ -7,7 +7,8 @@ class AwsInstanceGrailsPlugin {
     "grails-app/i18n/*",          // needed to test plugin
     "grails-app/views/error.gsp", // needed to test plugin
     "grails-app/views/index.gsp", // needed to test plugin
-    "web-app/**"
+    "web-app/**",
+    "**/test/**"
   ]
   def title = "AWS Instance"
   def author = "Allen Arakaki"

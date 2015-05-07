@@ -15,6 +15,7 @@
 package ikakara.awsinstance.dao.dynamo;
 
 import java.util.Map;
+import java.util.List;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 
@@ -39,7 +40,7 @@ public interface IDynamoTable {
 
   void marshalAttributesIN(Item item);
 
-  Item marshalItemOUT(boolean bRemoveAttributeNull);
+  Item marshalItemOUT(List removeAttributeNull);
 
   ADynamoObject newInstance(Item item);
 }

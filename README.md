@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.5.9'
+    compile ':aws-instance:0.6.0'
 ...
   }
 ```
@@ -180,6 +180,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.0 - marshalItemOUT - breaking change
 0.5.9 - fix withWriteOverCreated
 0.5.8 - withWriteOverCreated
 0.5.7 - fix (created/updated) regression
