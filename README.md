@@ -19,13 +19,13 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.33' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.34' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
   plugins {
 ...
-    compile ':aws-instance:0.6.0'
+    compile ':aws-instance:0.6.1'
 ...
   }
 ```
@@ -94,18 +94,25 @@ Services:
   * ```String getObjectURL(String lobBucketName, String rootfolder, String path)```
   * ```ObjectListing getObjectList(String lobBucketName, String rootfolder, String path)```
 * awsIdentityService
+  * ```[arn, account_id, user_name] getUserInfo()```
+  * ```reponseData getUser()```
   * ```responseData generateReport()```
   * ```list<IAMCredential> getReport()```
-  * ```jsonData listPool(int max = MAX_LIST_SIZE)```
+  * ```responseData getRole(String role)```
+  * ```jsonData listPool()```
   * ```responseData describePool(String poolArn)```
   * ```responseData createPool(String poolName, String providerDomain, boolean allowUnauthenticated=false)```
   * ```responseData updatePool(String poolArn)```
   * ```void deletePool(String poolArn)```
-  * ```jsonData listRole(String poolArn)```
-  * ```void setRoles(String poolArn, String authenticated, String unauthenticated)```
-  * ```void setRoles(String poolArn, Map<String, String> roles)```
-  * ```String listIdentity(String poolArn, int max = MAX_LIST_SIZE)```
+  * ```jsonData listRolePool(String poolArn)```
+  * ```void setRolePool(String poolArn, String authenticated, String unauthenticated)```
+  * ```void setRolePool(String poolArn, Map<String, String> roles)```
+  * ```String listIdentity(String poolArn)```
+  * ```String getDeveloperId(String poolArn, String developerUserId)```
   * ```[identityId, token] getDeveloperToken(String poolArn, String developerArn, String userId)```
+  * ```reponseData listLocalPolicies(pathPrefix = null)```
+  * ```responesData createLocalPolicy(String path, String name, String document, String description)```
+  * ```boolean deleteLocalPolicy(String accountId, String path, String name)```
 
 Examples:
 --------------
@@ -180,6 +187,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.1 - policy methods
 0.6.0 - marshalItemOUT - breaking change
 0.5.9 - fix withWriteOverCreated
 0.5.8 - withWriteOverCreated

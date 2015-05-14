@@ -57,8 +57,8 @@ class TestIdentityController {
     }
   }
 
-  def listRole() {
-    def resp = awsIdentityService.listRole(params.id)
+  def listRolePool() {
+    def resp = awsIdentityService.listRolePool(params.id)
 
     render resp ? resp as JSON : null
   }
@@ -81,16 +81,36 @@ class TestIdentityController {
     render resp ? resp as JSON : null
   }
 
-  def setRoles() {
+  def user() {
+    def resp = awsIdentityService.getUser()
+
+    render resp ? resp as JSON : null
+  }
+
+  def account() {
+    def resp = awsIdentityService.getUserInfo()
+
+    render resp ? resp as JSON : null
+  }
+
+
+  def role() {
+    def resp = awsIdentityService.getRole(params.id)
+
+    render resp ? resp as JSON : null
+  }
+
+  def setRolePool() {
     def resp = awsIdentityService.describePool(params.id)
     if(resp) {
-      awsIdentityService.setRoles(params.id, 'authenticated', 'unauthenticated' )
+      awsIdentityService.setRolePool(params.id, 'authenticated', 'unauthenticated' )
 
-      resp = awsIdentityService.listRole(params.id)
+      resp = awsIdentityService.listRolePool(params.id)
 
-      render "setRoles on pool: ${resp}"
+      render "setRolePool on pool: ${resp}"
     } else {
-      render "Failed to setRoles: ${params.id}"
+      render "Failed to setRolePool: ${params.id}"
     }
   }
+
 }
