@@ -19,7 +19,7 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.34' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.36' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
@@ -113,6 +113,7 @@ Services:
   * ```reponseData listLocalPolicies(pathPrefix = null)```
   * ```responesData createLocalPolicy(String path, String name, String document, String description)```
   * ```boolean deleteLocalPolicy(String accountId, String path, String name)```
+  * ```responseData listRoles(String pathPrefix)```
 
 Examples:
 --------------
@@ -187,18 +188,10 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.2 - awsIdentityService updates; fix awsStorageService.getURL()
 0.6.1 - policy methods
 0.6.0 - marshalItemOUT - breaking change
-0.5.9 - fix withWriteOverCreated
-0.5.8 - withWriteOverCreated
-0.5.7 - fix (created/updated) regression
-0.5.6 - bump version (should be the last)
-0.5.5 - createBucket; deleteEmptyBucket
-0.5.4 - createGlobalSecondaryIndex
-0.5.3 - merged Burt's cleanup
-0.5.2 - fix logging
-0.5.1 - tweak returns for awsIdentityService
-0.5   - awsIdentityService - cognito, iam
+0.5.9 - awsIdentityService; dynamoDB updates
 0.4.2 - dynamoDb tweaks
 0.3.7 - fixes EmailCommand
 0.2   - FileUtil

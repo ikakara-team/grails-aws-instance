@@ -180,7 +180,7 @@ class AwsStorageService implements InitializingBean {
   }
 
   String getURL(String lobBucketName, String key = null, hostForm = true) {
-    return hostForm ? "${lobBucketName}.s3.amazonaws.com/" : "s3.amazonaws.com/${lobBucketName}/" + (key ?: '')
+    return (hostForm ? "${lobBucketName}.s3.amazonaws.com/" : "s3.amazonaws.com/${lobBucketName}/") + (key ?: '')
   }
 
   String getObjectURL(String lobBucketName, String rootfolder, String path) {

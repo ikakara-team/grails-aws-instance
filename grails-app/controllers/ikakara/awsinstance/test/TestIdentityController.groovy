@@ -93,17 +93,21 @@ class TestIdentityController {
     render resp ? resp as JSON : null
   }
 
-
-  def role() {
-    def resp = awsIdentityService.getRole(params.id)
-
+  def roles() {
+    def resp
+    if(params.id) {
+      resp = awsIdentityService.getRole(params.id)
+    } else {
+      resp = awsIdentityService.listRoles()
+    }
     render resp ? resp as JSON : null
   }
 
   def setRolePool() {
     def resp = awsIdentityService.describePool(params.id)
     if(resp) {
-      awsIdentityService.setRolePool(params.id, 'authenticated', 'unauthenticated' )
+      println resp
+      awsIdentityService.setRolePool(params.id, 'arn:aws:iam::908857450283:role/Cognito_goofyappAuth_DefaultRole', null)
 
       resp = awsIdentityService.listRolePool(params.id)
 

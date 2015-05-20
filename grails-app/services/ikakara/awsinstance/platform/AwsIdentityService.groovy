@@ -33,6 +33,7 @@ import com.amazonaws.services.identitymanagement.model.CreatePolicyRequest
 import com.amazonaws.services.identitymanagement.model.DeletePolicyRequest
 import com.amazonaws.services.identitymanagement.model.GetRoleRequest
 import com.amazonaws.services.identitymanagement.model.User
+import com.amazonaws.services.identitymanagement.model.ListRolesRequest
 
 import com.opencsv.bean.ColumnPositionMappingStrategy
 import com.opencsv.bean.CsvToBean
@@ -57,6 +58,24 @@ class AwsIdentityService {
       'password_last_changed','password_next_rotation','mfa_active','access_key_1_active',
       'access_key_1_last_rotated','access_key_2_active','access_key_2_last_rotated',
       'cert_1_active','cert_1_last_rotated','cert_2_active','cert_2_last_rotated'] // the fields to bind do in your JavaBean
+
+  static final String DEFAULT_COGNITO_POLICY = '''
+  {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "mobileanalytics:PutEvents",
+        "cognito-sync:*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+'''
 
   def grailsApplication
 
@@ -154,6 +173,8 @@ class AwsIdentityService {
     }
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+
   def listPool() {
     try {
       def req = new ListIdentityPoolsRequest().withMaxResults(MAX_LIST_SIZE_POOL)
@@ -186,8 +207,14 @@ class AwsIdentityService {
       def req = new CreateIdentityPoolRequest()
       .withAllowUnauthenticatedIdentities(allowUnauthenticated)
       .withIdentityPoolName(poolName)
-      .withDeveloperProviderName(providerDomain)
-      return AWSInstance.COGNITO_CLIENT().createIdentityPool(req)
+
+      if(providerDomain) {
+        req.developerProviderName = providerDomain
+      }
+
+      def resp = AWSInstance.COGNITO_CLIENT().createIdentityPool(req)
+
+      return resp
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("createPool: ", ase)
     } catch (AmazonClientException ace) {
@@ -237,7 +264,17 @@ class AwsIdentityService {
   }
 
   void setRolePool(String poolArn, String authenticated, String unauthenticated) {
-    setRolePool(poolArn, ['authenticated': authenticated, 'unauthenticated': unauthenticated])
+    def roles = [:]
+
+    if(authenticated) {
+      roles['authenticated'] = authenticated
+    }
+
+    if(unauthenticated) {
+      roles['unauthenticated'] = unauthenticated
+    }
+
+    setRolePool(poolArn, roles)
   }
 
   void setRolePool(String poolArn, Map<String, String> roles) {
@@ -359,6 +396,29 @@ class AwsIdentityService {
       log.error "deleteLocalPolicy: $e.message"
     }
     return false
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Roles
+  /////////////////////////////////////////////////////////////////////////////
+
+  def listRoles(String pathPrefix) {
+    try {
+      def req = new ListRolesRequest().withMaxItems(MAX_LIST_SIZE_POLICY)
+
+      if(pathPrefix) {
+        req.pathPrefix = pathPrefix
+      }
+
+      def response = AWSInstance.IAM_CLIENT().listRoles(req)
+      return response
+    } catch (AmazonServiceException ase) {
+      PrintlnUtil.AmazonServiceException("listRoles: ", ase)
+    } catch (AmazonClientException ace) {
+      PrintlnUtil.AmazonClientException("listRoles: ", ace)
+    } catch(e) {
+      log.error "listRoles: $e.message"
+    }
   }
 
 }
