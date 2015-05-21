@@ -129,9 +129,12 @@ class AwsStorageService implements InitializingBean {
 
   def deleteObject(String lobBucketName, String rootfolder, String path) {
     def _key = "${rootfolder}/${path}"
+    deleteObject(lobBucketName, _key)
+  }
 
+  def deleteObject(String lobBucketName, String key) {
     try {
-      AWSInstance.S3_CLIENT().deleteObject(lobBucketName, _key)
+      AWSInstance.S3_CLIENT().deleteObject(lobBucketName, key)
     } catch (AmazonServiceException ase) {
       PrintlnUtil.AmazonServiceException("deleteObject ${lobBucketName}/${_key}", ase)
     } catch (AmazonClientException ace) {
