@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.6.3'
+    compile ':aws-instance:0.6.4'
 ...
   }
 ```
@@ -86,9 +86,10 @@ Services:
   * ```String getPublicObjectURL(String rootfolder, String path)```
   * ```String getPublicURL(String key = null)```
   * ```ObjectListing getPublicObjectList(String rootfolder, String path)```
-  * ```deletePublicObject(String rootfolder, String path)```
-  * ```deleteObject(String lobBucketName, String rootfolder, String path)```
-  * ```deleteObject(String lobBucketName, String key)```
+  * ```void deletePublicObject(String rootfolder, String path)```
+  * ```void deleteObject(String lobBucketName, String rootfolder, String path)```
+  * ```void deleteObject(String lobBucketName, String key)```
+  * ```void deletePublicURL(String key)```
   * ```boolean putBytes(String lobBucketName, String rootfolder, String path, byte[] _bytes, String contentType, Map metadata = null)```
   * ```[content, metadata] getBytes(String lobBucketName, String rootfolder, String path)```
   * ```String getURL(String lobBucketName, String key = null, bHostForm = true)```
@@ -189,6 +190,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.4 - awsStorageService.deletePublicURL()
 0.6.3 - awsStorageService.deleteObject()
 0.6.2 - awsIdentityService updates; fix awsStorageService.getURL()
 0.6.1 - policy methods

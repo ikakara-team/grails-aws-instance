@@ -83,8 +83,12 @@ class AwsStorageService implements InitializingBean {
     return getObjectList(PUBLIC_BUCKET, rootfolder, path)
   }
 
-  String deletePublicObject(String rootfolder, String path) {
-    return deleteObject(PUBLIC_BUCKET, rootfolder, path)
+  void deletePublicObject(String rootfolder, String path) {
+    deleteObject(PUBLIC_BUCKET, rootfolder, path)
+  }
+
+  void deletePublicURL(String key) {
+    deleteObject(PUBLIC_BUCKET, key)
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -127,12 +131,12 @@ class AwsStorageService implements InitializingBean {
     return false
   }
 
-  def deleteObject(String lobBucketName, String rootfolder, String path) {
+  void deleteObject(String lobBucketName, String rootfolder, String path) {
     def _key = "${rootfolder}/${path}"
     deleteObject(lobBucketName, _key)
   }
 
-  def deleteObject(String lobBucketName, String key) {
+  void deleteObject(String lobBucketName, String key) {
     try {
       AWSInstance.S3_CLIENT().deleteObject(lobBucketName, key)
     } catch (AmazonServiceException ase) {
