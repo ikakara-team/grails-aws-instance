@@ -94,7 +94,7 @@ class AwsStorageService implements InitializingBean {
   /////////////////////////////////////////////////////////////////////////////
 
   def listBuckets() {
-    AWSInstance.S3_CLIENT().listBuckets();
+    AWSInstance.S3_CLIENT().listBuckets()
   }
 
   Boolean createBucket(String bucketName) {
@@ -102,7 +102,7 @@ class AwsStorageService implements InitializingBean {
       if(!(AWSInstance.S3_CLIENT().doesBucketExist(bucketName))) {
         // Note that CreateBucketRequest does not specify region. So bucket is
         // created in the region specified in the client.
-        AWSInstance.S3_CLIENT().createBucket(bucketName);
+        AWSInstance.S3_CLIENT().createBucket(bucketName)
         return true
       }
       return null
@@ -118,7 +118,7 @@ class AwsStorageService implements InitializingBean {
   Boolean deleteEmptyBucket(String bucketName) {
     try {
       if(AWSInstance.S3_CLIENT().doesBucketExist(bucketName)) {
-        AWSInstance.S3_CLIENT().deleteBucket(bucketName);
+        AWSInstance.S3_CLIENT().deleteBucket(bucketName)
         return true
       }
       return null // doesn't exist
