@@ -25,12 +25,12 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.6.4'
+    compile ':aws-instance:0.6.5'
 ...
   }
 ```
 
-Configuration:
+Application Configuration:
 --------------
 
 Add the following to grails-app/conf/Config.groovy:
@@ -190,6 +190,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.5 - FileUtil.splitFileNameExtension()
 0.6.4 - awsStorageService.deletePublicURL()
 0.6.3 - awsStorageService.deleteObject()
 0.6.2 - awsIdentityService updates; fix awsStorageService.getURL()

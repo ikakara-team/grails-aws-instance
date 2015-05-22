@@ -88,4 +88,17 @@ class FileUtil {
 
     return [isValid, extension]
   }
+
+  static List splitFileNameExtension(String filename) {
+    String name = filename
+    String extension
+
+    int dotPos = filename.lastIndexOf(".")
+    if (dotPos != -1) {
+      extension = filename.substring(dotPos + 1).toLowerCase()
+      name = filename.substring(0, dotPos)
+    }
+
+    return [name, extension]
+  }
 }
