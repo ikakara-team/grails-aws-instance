@@ -14,6 +14,10 @@
  */
 package ikakara.awsinstance.platform
 
+import grails.compiler.GrailsCompileStatic
+import groovy.transform.TypeCheckingMode
+import groovy.util.logging.Slf4j
+
 import com.amazonaws.AmazonClientException
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.simpleemail.model.Body
@@ -29,11 +33,14 @@ import ikakara.awsinstance.aws.AWSInstance
 import ikakara.awsinstance.command.EmailCommand
 import ikakara.awsinstance.command.EmailStatsCommand
 
+@GrailsCompileStatic
+@Slf4j
 class AwsEmailService {
   static transactional = false
 
   def grailsApplication
 
+  @GrailsCompileStatic(TypeCheckingMode.SKIP)
   private String mailFrom() {
     return grailsApplication.config.grails.plugin.awsinstance?.ses?.mailFrom
   }
@@ -64,7 +71,7 @@ class AwsEmailService {
       throw new EmailException("You must provide a message subject.")
     }
 
-    def destination = new Destination(toAddresses: email.to)
+    def destination = new Destination().withToAddresses(email.to)
 
     def mailBody = new Body(
       html: email.html ? new Content(email.html) : null,

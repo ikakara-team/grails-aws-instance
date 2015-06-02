@@ -14,6 +14,10 @@
  */
 package ikakara.awsinstance.platform
 
+import grails.compiler.GrailsCompileStatic
+import groovy.transform.TypeCheckingMode
+import groovy.util.logging.Slf4j
+
 import org.springframework.beans.factory.InitializingBean
 
 import com.amazonaws.AmazonClientException
@@ -28,6 +32,8 @@ import com.amazonaws.services.s3.model.S3Object
 import ikakara.awsinstance.aws.AWSInstance
 import ikakara.awsinstance.util.PrintlnUtil
 
+@GrailsCompileStatic
+@Slf4j
 class AwsStorageService implements InitializingBean {
   static transactional = false
 
@@ -38,6 +44,7 @@ class AwsStorageService implements InitializingBean {
 
   def grailsApplication
 
+  @GrailsCompileStatic(TypeCheckingMode.SKIP)
   void afterPropertiesSet() {
     // We should throw an exception if the PUBLIC_BUCKET contains any dots
     PUBLIC_BUCKET = grailsApplication.config.grails.plugin.awsinstance?.s3.bucketName
@@ -63,6 +70,7 @@ class AwsStorageService implements InitializingBean {
     return getBytes(PUBLIC_BUCKET, rootfolder, path)
   }
 
+  @GrailsCompileStatic(TypeCheckingMode.SKIP)
   def getPublicText(String rootfolder, String path) {
 
     def (InputStream content, metadata) = getBytes(PUBLIC_BUCKET, rootfolder, path)
@@ -140,9 +148,9 @@ class AwsStorageService implements InitializingBean {
     try {
       AWSInstance.S3_CLIENT().deleteObject(lobBucketName, key)
     } catch (AmazonServiceException ase) {
-      PrintlnUtil.AmazonServiceException("deleteObject ${lobBucketName}/${_key}", ase)
+      PrintlnUtil.AmazonServiceException("deleteObject ${lobBucketName}/${key}", ase)
     } catch (AmazonClientException ace) {
-      PrintlnUtil.AmazonClientException("deleteObject ${lobBucketName}/${_key}", ace)
+      PrintlnUtil.AmazonClientException("deleteObject ${lobBucketName}/${key}", ace)
     }
   }
 
@@ -170,6 +178,7 @@ class AwsStorageService implements InitializingBean {
     return false
   }
 
+  @GrailsCompileStatic(TypeCheckingMode.SKIP)
   def getBytes(String lobBucketName, String rootfolder, String path) {
     S3Object object
 
@@ -209,6 +218,7 @@ class AwsStorageService implements InitializingBean {
     } catch (AmazonClientException ace) {
       PrintlnUtil.AmazonClientException("getObjectList ${lobBucketName}/${_key}", ace)
     }
+    return null
   }
 
   private static String inputStreamToString(InputStream input) throws IOException {

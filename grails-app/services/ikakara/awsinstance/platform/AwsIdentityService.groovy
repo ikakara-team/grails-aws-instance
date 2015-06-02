@@ -16,6 +16,9 @@ package ikakara.awsinstance.platform
 
 import java.nio.charset.Charset
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import com.amazonaws.AmazonClientException
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.cognitoidentity.model.CreateIdentityPoolRequest
@@ -37,9 +40,6 @@ import com.amazonaws.services.identitymanagement.model.ListRolesRequest
 
 import com.opencsv.bean.ColumnPositionMappingStrategy
 import com.opencsv.bean.CsvToBean
-
-import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
 import ikakara.awsinstance.aws.AWSInstance
 import ikakara.awsinstance.aws.IAMCredential
