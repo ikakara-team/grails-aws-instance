@@ -32,6 +32,8 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
 import com.amazonaws.services.sqs.AmazonSQS
 import com.amazonaws.services.sqs.AmazonSQSClient
+import com.amazonaws.services.cloudformation.AmazonCloudFormation
+import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 
 /**
  * @author Allen
@@ -94,6 +96,11 @@ class AWSInstance {
   private static AmazonIdentityManagement _iamClient = new AmazonIdentityManagementClient(AuthCredentials.instance)
   static AmazonIdentityManagement IAM_CLIENT() {
     return _iamClient
+  }
+
+  private static AmazonCloudFormation _cloudformationClient = new AmazonCloudFormationClient(AuthCredentials.instance)
+  static AmazonCloudFormation CLOUDFORMATION_CLIENT() {
+    return _cloudformationClient
   }
 
   private static DynamoDB _dynamoDB
