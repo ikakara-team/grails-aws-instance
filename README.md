@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.6.6'
+    compile ':aws-instance:0.6.7'
 ...
   }
 ```
@@ -200,6 +200,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.7 - streamToString
 0.6.6 - AwsConfigurationService
 0.6.5 - FileUtil.splitFileNameExtension()
 0.6.4 - awsStorageService.deletePublicURL()
