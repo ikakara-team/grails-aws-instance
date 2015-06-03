@@ -19,13 +19,13 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.36' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.39' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
   plugins {
 ...
-    compile ':aws-instance:0.6.5'
+    compile ':aws-instance:0.6.6'
 ...
   }
 ```
@@ -38,6 +38,7 @@ Add the following to grails-app/conf/Config.groovy:
 grails {
   plugin {
     awsinstance {
+      defaultRegion='US_EAST_1'
       accessKey='AWS_ACCESSKEY'
       secretKey='AWS_SECRETKEY'
       s3.bucketName='AWS_S3_BUCKETNAME'
@@ -66,6 +67,9 @@ AWSInstance.COGNITO_CLIENT()
 
 // AmazonIdentityManagement Client
 AWSInstance.IAM_CLIENT()
+
+// AmazonCloudFormation Client
+AWSInstance.CLOUDFORMATION_CLIENT()
 ```
 
 Services:
@@ -116,6 +120,12 @@ Services:
   * ```responesData createLocalPolicy(String path, String name, String document, String description)```
   * ```boolean deleteLocalPolicy(String accountId, String path, String name)```
   * ```responseData listRoles(String pathPrefix)```
+* awsConfigurationService
+  * ```List<Stack> listStack(Region region=DEFAULT_REGION)```
+  * ```List<StackResource> findStack(String stackName, Region region=DEFAULT_REGION)```
+  * ```boolean createStack(String stackName, String template, Region region=DEFAULT_REGION)```
+  * ```boolean deleteStack(String stackName, Region region=DEFAULT_REGION)```
+  * ```String waitForCompletion(String stackName, Region region=DEFAULT_REGION)```
 
 Examples:
 --------------
@@ -190,6 +200,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.6 - AwsConfigurationService
 0.6.5 - FileUtil.splitFileNameExtension()
 0.6.4 - awsStorageService.deletePublicURL()
 0.6.3 - awsStorageService.deleteObject()
