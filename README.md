@@ -19,7 +19,7 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.39' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.9.40' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
