@@ -123,7 +123,7 @@ Services:
 * awsConfigurationService
   * ```List<Stack> listStack(Region region=DEFAULT_REGION)```
   * ```List<StackResource> findStack(String stackName, Region region=DEFAULT_REGION)```
-  * ```boolean createStack(String stackName, String template, Region region=DEFAULT_REGION)```
+  * ```boolean createStack(String stackName, String template, List<Parameter> params, Region region=DEFAULT_REGION)```
   * ```boolean deleteStack(String stackName, Region region=DEFAULT_REGION)```
   * ```String waitForCompletion(String stackName, Region region=DEFAULT_REGION)```
 
@@ -200,6 +200,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.8 - tweak createStack
 0.6.7 - streamToString
 0.6.6 - AwsConfigurationService
 0.6.5 - FileUtil.splitFileNameExtension()

@@ -5,9 +5,13 @@ import java.nio.ByteBuffer
 
 import grails.converters.JSON
 
+import com.amazonaws.services.cloudformation.model.Parameter
+
 class TestConfigurationController {
 
   def awsConfigurationService
+
+  static int count_create = 0
 
   def getTemplate(name) {
     return """
@@ -24,9 +28,6 @@ class TestConfigurationController {
     """
   }
 
-  static int count_create = 0
-
-
   def index() {
     render awsConfigurationService.listStack()
   }
@@ -40,7 +41,7 @@ class TestConfigurationController {
 
     def template = getTemplate(params.id)
 
-    render awsConfigurationService.createStack(params.id, template)
+    render awsConfigurationService.createStack(params.id, template, null)
   }
 
   def check () {

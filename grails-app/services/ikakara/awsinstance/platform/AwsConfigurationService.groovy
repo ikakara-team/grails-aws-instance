@@ -26,12 +26,15 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import com.amazonaws.services.cloudformation.model.CreateStackRequest
+import com.amazonaws.services.cloudformation.model.UpdateStackRequest
 import com.amazonaws.services.cloudformation.model.DeleteStackRequest
 import com.amazonaws.services.cloudformation.model.DescribeStackResourcesRequest
 import com.amazonaws.services.cloudformation.model.DescribeStacksRequest
 import com.amazonaws.services.cloudformation.model.Stack
 import com.amazonaws.services.cloudformation.model.StackResource
 import com.amazonaws.services.cloudformation.model.StackStatus
+import com.amazonaws.services.cloudformation.model.Parameter
+import com.amazonaws.services.cloudformation.model.Capability
 
 import ikakara.awsinstance.aws.AWSInstance
 import ikakara.awsinstance.util.PrintlnUtil
@@ -84,12 +87,18 @@ class AwsConfigurationService implements InitializingBean {
     return null
   }
 
-  boolean createStack(String stackName, String template, Region region=DEFAULT_REGION) {
+  boolean createStack(String stackName, String template, Parameter... params, Region region=DEFAULT_REGION) {
     AmazonCloudFormationClient stackbuilder = (AmazonCloudFormationClient)AWSInstance.CLOUDFORMATION_CLIENT()
     stackbuilder.withRegion(region)
 
     try {
-      CreateStackRequest createRequest = new CreateStackRequest().withStackName(stackName).withTemplateBody(template)
+      CreateStackRequest createRequest = new CreateStackRequest()
+      .withStackName(stackName)
+      .withTemplateBody(template)
+      .withCapabilities(Capability.CAPABILITY_IAM)
+      if(params) {
+        createRequest.withParameters(params)
+      }
       log.debug("Creating a stack called " + createRequest.getStackName() + ".")
       stackbuilder.createStack(createRequest)
 
