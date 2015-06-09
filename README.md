@@ -25,7 +25,7 @@ Installation:
 
   plugins {
 ...
-    compile ':aws-instance:0.6.8'
+    compile ':aws-instance:0.6.9'
 ...
   }
 ```
@@ -200,6 +200,7 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
+0.6.9 - refactor: TemplateReader
 0.6.8 - tweak createStack
 0.6.7 - streamToString
 0.6.6 - AwsConfigurationService

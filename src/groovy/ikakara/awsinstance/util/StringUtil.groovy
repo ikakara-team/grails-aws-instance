@@ -14,11 +14,9 @@
  */
 package ikakara.awsinstance.util
 
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
 import java.security.SecureRandom
 
+import groovy.text.GStringTemplateEngine
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -30,20 +28,8 @@ class StringUtil {
   static final String RANDOM_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
   static final int RANDOM_CHARS_LENGTH = RANDOM_CHARS.length()
 
-  // Convert a stream into a single, newline separated string
-  static String streamToString(InputStream input, boolean closeStream=true) throws Exception {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(input))
-    StringBuilder stringbuilder = new StringBuilder()
-    String line = null
-    while ((line = reader.readLine()) != null) {
-      stringbuilder.append(line + "\n")
-    }
-
-    if(closeStream) {
-      input.close()
-    }
-
-    return stringbuilder.toString()
+  static String renderTemplate(Reader reader, Map binding) {
+    return new GStringTemplateEngine().createTemplate(reader).make(binding)
   }
 
   static String slugify(String str) throws IOException {

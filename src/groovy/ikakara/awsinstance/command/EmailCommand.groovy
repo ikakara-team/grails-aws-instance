@@ -17,9 +17,11 @@ package ikakara.awsinstance.command
 import org.codehaus.groovy.grails.web.util.StreamCharBuffer
 
 import grails.validation.Validateable
-import groovy.text.GStringTemplateEngine
+
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
+
+import ikakara.awsinstance.util.StringUtil
 
 /**
  * @author Allen
@@ -68,7 +70,7 @@ class EmailCommand {
   }
 
   EmailCommand withText(Reader reader, Map binding) {
-    return withText(renderTemplate(reader, binding))
+    return withText(StringUtil.renderTemplate(reader, binding))
   }
 
   EmailCommand withText(String template, Map binding) {
@@ -87,14 +89,10 @@ class EmailCommand {
   }
 
   EmailCommand withHtml(Reader reader, Map binding) {
-    return withHtml(renderTemplate(reader, binding))
+    return withHtml(StringUtil.renderTemplate(reader, binding))
   }
 
   EmailCommand withHtml(String template, Map binding) {
     return withHtml(new StringReader(template), binding)
-  }
-
-  private String renderTemplate(Reader reader, Map binding) {
-    return new GStringTemplateEngine().createTemplate(reader).make(binding)
   }
 }
