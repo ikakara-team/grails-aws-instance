@@ -13,7 +13,7 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.9.40') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.10.2') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false // allow user to use another version
     }
 
@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
     }
 
     // needed for config management
-    compile ':plugin-config:0.2.0'
+    compile ':plugin-config:0.2.1'
 
     build(':release:3.1.1', ':rest-client-builder:2.1.1') {
       export = false

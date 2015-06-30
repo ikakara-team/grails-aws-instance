@@ -19,13 +19,13 @@ Installation:
   dependencies {
 ...
     // use a version of the sdk that support SES, S3, etc
-    compile 'com.amazonaws:aws-java-sdk:1.9.40' // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile 'com.amazonaws:aws-java-sdk:1.10.2' // http://aws.amazon.com/releasenotes/Java?browse=1
 ...
   }
 
   plugins {
 ...
-    compile ':aws-instance:0.6.9'
+    compile ':aws-instance:0.7.0'
 ...
   }
 ```
@@ -191,7 +191,7 @@ if (awsStorageService.putPublicBytes(USERS_FOLDER, fullKey, imgFile.bytes, imgFi
 
 Copyright & License:
 --------------
-Copyright 2014-2015 Allen Arakaki.  All Rights Reserved.
+Copyright 2014-2015 the original author or authors.
 
 ```
 Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
@@ -200,16 +200,8 @@ Apache 2 License - http://www.apache.org/licenses/LICENSE-2.0
 History:
 --------------
 ```
-0.6.9 - refactor: TemplateReader
-0.6.8 - tweak createStack
-0.6.7 - streamToString
-0.6.6 - AwsConfigurationService
-0.6.5 - FileUtil.splitFileNameExtension()
-0.6.4 - awsStorageService.deletePublicURL()
-0.6.3 - awsStorageService.deleteObject()
-0.6.2 - awsIdentityService updates; fix awsStorageService.getURL()
-0.6.1 - policy methods
-0.6.0 - marshalItemOUT - breaking change
+0.7.0 - update copyright
+0.6.9 - breaking change; awsConfigurationService
 0.5.9 - awsIdentityService; dynamoDB updates
 0.4.2 - dynamoDb tweaks
 0.3.7 - fixes EmailCommand
