@@ -13,7 +13,7 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ('com.amazonaws:aws-java-sdk:1.10.2') { // http://aws.amazon.com/releasenotes/Java?browse=1
+    compile ('com.amazonaws:aws-java-sdk:1.10.7') { // http://aws.amazon.com/releasenotes/Java?browse=1
       export = false // allow user to use another version
     }
 
